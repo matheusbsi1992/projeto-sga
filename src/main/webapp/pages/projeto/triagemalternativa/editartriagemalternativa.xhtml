@@ -1,0 +1,138 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" 
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" 
+                xmlns:adm="http://github.com/adminfaces"
+                xmlns:o="http://omnifaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:define name="head-end">
+        <ui:param name="renderBreadCrumb" value="false"/>
+    </ui:define>
+
+    <ui:define name="title">
+        Editar TriagemAlternativa
+    </ui:define>
+
+    <ui:define name="description">
+        Gerencie os Serviços com os Seus Locais de Atendimento...
+    </ui:define>
+
+    <ui:define name="body">
+        <f:metadata>
+        </f:metadata>
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h:form id="formulario" prependId="false" rendered="#{((loginMB.ativartriagemalternativa) and (loginMB.ativo==(true)))}">
+                    <h:inputHidden id="id" value="#{triagemAlternativaMB.triagemAlternativatransfer.id}"/>                                            
+                    <p:focus/>
+                    <div class="ui-g-12">
+                        <div class="ui-g-12">
+                            <p:outputLabel for="siglatriagemalternativa" value="Sigla*"/> 
+                            <p:inputText id="siglatriagemalternativa" value="#{triagemAlternativaMB.triagemAlternativatransfer.siglatriagemalternativa}" validator="#{triagemAlternativaMB.validarSiglaTriagemAlternativa}" styleClass="form-control"/>                                            
+                            <p:message for="siglatriagemalternativa"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <p:outputLabel for="servico" value="Serviço*"/> 
+                    </div>
+                    <div class="col-xs-12">
+                        <p:selectOneMenu id="servico" 
+                                         value="#{triagemAlternativaMB.triagemAlternativatransfer.servicotransfer.nomeservico}"
+                                         panelStyle="width:180px"                                         
+                                         filter="true"
+                                         filterMatchMode="startsWith"
+                                         validator="#{triagemAlternativaMB.validarServicoTriagemAlternativa}">
+                            <f:selectItem itemLabel="Servico" itemValue="" />
+                            <f:selectItems value="#{triagemAlternativaMB.servico}"
+                                           var="servico"
+                                           itemValue="#{servico.nomeservico}"
+                                           itemLabel="#{servico.nomeservico}"
+                                           itemDescription="#{servico.nomeservico}"
+                                           />
+                        </p:selectOneMenu>
+                        <p:message for="servico"/>
+                    </div>
+                    <div class="col-xs-12">
+                        <p:outputLabel for="local" value="Local*"/> 
+                    </div>
+                    <div class="col-xs-12">
+                        <p:selectOneMenu id="local"
+                                         filter="true"
+                                         filterMatchMode="startsWith"
+                                         value="#{triagemAlternativaMB.triagemAlternativatransfer.localtransfer.nomelocal}"
+                                         validator="#{triagemAlternativaMB.validarLocalTriagemAlternativa}">
+                            <f:selectItem itemLabel="Local" itemValue="" />
+                            <f:selectItems value="#{triagemAlternativaMB.local}" 
+                                           var="local"
+                                           itemValue="#{local.nomelocal}"
+                                           itemLabel="#{local.nomelocal}"
+                                           itemDescription="#{local.nomelocal}"
+                                           />
+                        </p:selectOneMenu>
+                        <p:message for="local"/>
+                    </div>
+                    <div class="ui-g-12">
+                        <div class="ui-g-12">
+                            <p:outputLabel for="status" value="Status*"/>
+                            <p:selectOneMenu id="status" value="#{triagemAlternativaMB.triagemAlternativatransfer.statustriagemalternativa}">
+                                <f:selectItem itemLabel="Inativo" itemValue="I"/>
+                                <f:selectItem itemLabel="Ativo" itemValue="A"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="ui-g-12">
+
+                        <p:spacer height="20"/>
+                        <p:separator/>
+                        <p:commandButton  action="#{triagemAlternativaMB.alterarTriagemAlternativa()}" 
+                                          value="Salvar"
+                                          ajax="false"
+                                          icon="fa fa-check"
+                                          styleClass="btn-primary pull-right"/>
+                        <p:spacer width="10" />
+                        <p:commandButton value="Cancelar" 
+                                         action="#{triagemAlternativaMB.limpar()}"
+                                         update=":formulario"
+                                         icon="fa fa-trash"
+                                         type="reset"
+                                         styleClass="btn-danger pull-right">
+                        </p:commandButton>
+                        <p:spacer width="10" />
+                        <p:commandButton value="Voltar" immediate="true"
+                                         action="consultartriagemalternativa?faces-redirect=true"
+                                         icon="fa fa-close"
+                                         styleClass="pull-right"
+                                         />
+
+                    </div>
+
+                    <script type="text/javascript">
+                        function handleMessageLocal(facesmessage) {
+                            facesmessage.severity = 'info';
+                        }
+                    </script>
+
+                    <o:socket channel="localpushmb" onmessage="handleMessageLocal" >
+                        <p:ajax event="localpushmb" 
+                                update="@(div[id$=local])" 
+                                listener="#{triagemAlternativaMB.listarLocal()}"/>
+                    </o:socket>
+
+                    <script type="text/javascript">
+                        function handleMessageServico(facesmessage) {
+                            facesmessage.severity = 'info';
+                        }
+                    </script>
+
+                    <o:socket channel="servicopushmb" onmessage="handleMessageServico" >
+                        <p:ajax event="servicopushmb" 
+                                update="@(div[id$=servico])" 
+                                listener="#{triagemAlternativaMB.listarServico()}"/>
+                    </o:socket>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,113 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ul class="sidebar-menu tree" data-widget="tree" style="color: #b9def0">
+        <li>
+            <h:link outcome="/home.xhtml?faces-redirect=true">
+                <i class="fa fa-home"></i>
+                <span>Home</span>
+            </h:link>
+        </li>
+        <li class="header">
+            <p:tab>GLOBAL</p:tab>
+        </li>
+        <li>
+            <h:link  outcome="/pages/projeto/cargo/consultarcargo.xhtml?faces-redirect=true"
+                     rendered="#{((loginMB.ativarcargo) and (loginMB.ativo==(true)))}">
+                <i class="fa fa-suitcase"></i>
+                <span>Cargo</span>
+            </h:link>
+        </li>
+
+        <li class="treeview" >
+            <p:link href="#"
+                    rendered="#{((loginMB.ativarestatistica) and (loginMB.ativo==(true)))}">
+                <i class="fa fa-bar-chart"></i>
+                <span>Estatísticas</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </p:link>
+            <ul class="treeview-menu">
+                <li>
+                    <h:link  outcome="/pages/projeto/estatisticas/graficosestatisticas.xhtml?faces-redirect=true"
+                             rendered="#{((loginMB.ativarestatistica) and (loginMB.ativo==(true)))}"
+                             >
+                        <span>Gráficos</span>
+                    </h:link>
+                </li>
+                <li>
+                    <h:link  outcome="/pages/projeto/estatisticas/relatoriosestatisticas.xhtml?faces-redirect=true"
+                             rendered="#{((loginMB.ativarestatistica) and (loginMB.ativo==(true)))}"
+                             >
+                        <span>Relatórios</span>
+                    </h:link>
+                </li>
+            </ul>
+        </li>
+
+        <li>
+            <h:link  outcome="/pages/projeto/local/consultarlocal.xhtml?faces-redirect=true"
+                     rendered="#{((loginMB.ativarlocal) and (loginMB.ativo==(true)))}" >
+                <i class="fa fa-map-marker"></i>
+                <span>Local</span>
+            </h:link>
+        </li>
+        <li>
+            <h:link  outcome="/pages/projeto/unidade/consultarunidade.xhtml?faces-redirect=true"
+                     rendered="#{((loginMB.ativarunidade) and (loginMB.ativo==(true)))}" >
+                <i class="fa fa-hospital-o"></i>
+                <span>Unidade</span>
+            </h:link>
+        </li>
+        <li>
+            <h:link  outcome="/pages/projeto/usuario/consultarusuario.xhtml?faces-redirect=true"
+                     rendered="#{((loginMB.ativarusuario) and (loginMB.ativo==(true)))}">
+                <i class="fa fa-users"></i>
+                <span>Usuário</span>
+            </h:link>
+        </li>
+
+        <li>
+            <h:link  outcome="/pages/projeto/servico/consultarservico.xhtml?faces-redirect=true"
+                     rendered="#{((loginMB.ativarservico) and (loginMB.ativo==(true)))}">
+                <i class="fa fa-clipboard"></i>
+                <span>Serviço</span>
+            </h:link>
+        </li>
+
+        <li class="header">
+            <p:tab>LOCAL</p:tab>
+        </li>
+        <li>
+            <h:link  outcome="/pages/projeto/atendimento/atendimentocliente.xhtml?faces-redirect=true"
+                     rendered="#{((loginMB.ativaratendimento) and (loginMB.ativo==(true)))}">
+                <i class="fa fa-commenting"></i>
+                <span>Atendimento</span>
+            </h:link>
+        </li>
+        <li>
+            <h:link  outcome="/pages/projeto/monitor/monitortriagemachamadacliente.xhtml?faces-redirect=true"
+                     rendered="#{((loginMB.ativarmonitor) and (loginMB.ativo==(true)))}">
+                <i class="fa fa-desktop"></i>
+                <span>Monitor</span>
+            </h:link>
+        </li>
+        <li>
+            <h:link  outcome="/pages/projeto/triagemalternativa/consultartriagemalternativa.xhtml?faces-redirect=true"
+                     rendered="#{((loginMB.ativartriagemalternativa) and (loginMB.ativo==(true)))}">
+                <i class="fa fa-address-card"></i>
+                <span>Triagem Alternativa</span>
+            </h:link>
+        </li>
+        <li>
+            <h:link  outcome="/pages/projeto/triagemchamadacliente/consultartriagemachamadacliente.xhtml?faces-redirect=true"
+                     rendered="#{((loginMB.ativartriagemchamadacliente) and (loginMB.ativo==(true)))}">
+                <i class="fa fa-address-book"></i>
+                <span>Triagem</span>
+            </h:link>
+        </li>
+    </ul>
+</ui:composition>

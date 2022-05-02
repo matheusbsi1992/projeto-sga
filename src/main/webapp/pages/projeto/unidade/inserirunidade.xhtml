@@ -1,0 +1,74 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:define name="head-end">
+        <ui:param name="renderBreadCrumb" value="false"/>
+    </ui:define>
+
+    <ui:define name="title">
+        Cadastrar Unidade
+    </ui:define>
+
+    <ui:define name="description">
+        Gerencie a Unidade do Sistema... 
+    </ui:define>
+
+    <ui:define name="body">
+
+        <f:metadata>
+        </f:metadata>
+        <div class="box box-primary">
+
+            <div class="box-header with-border">
+                <h:form id="formulario" prependId="false" rendered="#{((loginMB.ativarunidade) and (usuarioTransfer.statususuario==('A')))}">
+                    <h:inputHidden id="id" value="#{unidadeMB.unidadetransfer.id}"/>                                            
+                    <p:focus/>
+                    <div class="ui-g-12">
+                        <div class="ui-g-12">
+                            <p:outputLabel for="siglaunidade" value="Sigla Unidade*"/> 
+                            <p:inputText id="siglaunidade" value="#{unidadeMB.unidadetransfer.siglaunidade}" validator="#{unidadeMB.validarSiglaUnidade}" styleClass="form-control"/>                                            
+                            <p:message for="siglaunidade"/>
+                        </div>
+                    </div>
+                    <div class="ui-g-12">
+                        <div class="ui-g-12">
+                            <p:outputLabel for="nomeunidade" value="Nome Unidade*"/> 
+                            <p:inputText id="nomeunidade" value="#{unidadeMB.unidadetransfer.nomeunidade}" validator="#{unidadeMB.validarNomeUnidade}" styleClass="form-control"/>                                            
+                            <p:message for="nomeunidade"/>
+                        </div>
+                    </div>
+                    
+                    <div class="ui-g-12">
+                        <p:spacer height="50"/>
+                        <p:toolbar>
+                            <f:facet name="right">
+                                <p:commandButton  actionListener="#{unidadeMB.inserirUnidade()}" value="Salvar"
+                                                  ajax="false"   icon="fa fa-check" styleClass="btn-primary"/>
+                                <p:spacer width="10" height="10" />
+                                <p:commandButton value="Cancelar" 
+                                                 action="#{unidadeMB.limpar()}"
+                                                 update=":formulario:nomeunidade"
+                                                 icon="fa fa-trash"
+                                                 type="reset"
+                                                 styleClass="btn-danger">
+                                </p:commandButton>
+                                <p:spacer width="10" height="10" />
+                                <p:commandButton value="Voltar" immediate="true"
+                                                 action="consultarunidade?faces-redirect=true"
+                                                 icon="fa fa-close"
+                                                 />
+                            </f:facet>
+                        </p:toolbar>
+
+                    </div>
+
+
+                </h:form>
+            </div>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

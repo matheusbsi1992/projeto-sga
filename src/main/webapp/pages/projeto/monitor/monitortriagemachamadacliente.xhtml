@@ -1,0 +1,412 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" 
+                xmlns:o="http://omnifaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml"
+                >
+    <ui:define name="head-end">
+        <ui:param name="renderBreadCrumb" value="false"/>
+        <style type="text/css">
+            div.ui-panel .ui-panel-title {
+                display: inline-block;
+                font-size: 15px;
+                margin: 0;
+                line-height: 1;
+                color: #444;
+                font-weight: 500;
+                padding: 8px 5px;
+                font-weight: bold;
+            }
+
+            .middlePanelClass   .ui-widget-content{
+                font-size: 10px;
+                background-color: yellow;
+                font-family: 'Lucida Sans Unicode',Verdana,Arial,Helvetica,sans-serif;
+            }
+            .largefont{
+                font-size: large;
+            }
+            .boldfont{
+                font-size: large;
+                font-weight: bold;
+            }
+            body .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-title,
+            body .ui-dialog .ui-dialog-titlebar .ui-dialog-title{
+                float: left;
+                font-size: larger;
+                font-weight: 500;
+                color: #444;
+                margin: .3em 16px .3em 0;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="title">
+        Monitor
+    </ui:define>
+
+    <ui:define name="description">
+        Gerencie as Senhas Aguardando Atendimento...
+    </ui:define>
+
+    <ui:define name="body" >
+        <div class="box box-primary right">
+            <div class="box-header with-border right">
+                <h:form id="consultarmonitor" rendered="#{((loginMB.ativarmonitor) and (loginMB.ativo==(true)))}">
+                    <p:growl widgetVar="wmsj" 
+                             id="wmsj"
+                             sticky="true"
+                             keepAlive="true"
+                             />
+                    <p:panel class="ui-g-12">
+                        <legend>Pesquisar</legend>
+                        <div class="ui-g-12">
+                            <div class="ui-g-12 ui-md-4">
+                                <div class="ui-inputgroup">
+                                    <p:inputText placeholder="Buscar Senha" value="#{monitor}" id="senhamonitor"
+                                                 />
+
+                                    <p:commandButton id="botaopesquisar" 
+                                                     ajax="false" 
+                                                     title="Pesquisar Senha"
+                                                     update=":consultarmonitor:overviewTableUserMonitor"  
+                                                     process="@this" 
+                                                     action="#{monitorChamadaClienteListarMB.consultarAction(loginMB.usuariotransfer.id,monitor,ativoouinativo)}"                                                      
+                                                     icon="fa fa-search" 
+                                                     styleClass="btn-info"/>
+
+
+                                </div>   
+                                <p:spacer height="10"/>
+                                <div class="ui-inputgroup">
+                                    <p:selectOneMenu value="#{ativoouinativo}"                                                      
+                                                     title="Senha Ativa/Senha Inativa"                                                     
+                                                     >                                        
+                                        <f:selectItem itemLabel="Senha Ativa - Sistema SGA" itemValue="A" />
+                                        <f:selectItem itemLabel="Senha Inativa - Sistema SGA" itemValue="I"/>
+                                        <p:ajax listener="#{monitorChamadaClienteListarMB.consultarAction(loginMB.usuariotransfer.id,monitor,ativoouinativo)}" 
+                                                update=":consultarmonitor:overviewTableUserMonitor" />
+                                    </p:selectOneMenu>
+                                </div>                            
+                            </div>
+                        </div>
+
+                    </p:panel>
+
+                    <p:spacer height="20px"/>
+
+                    <div class="ui-xs-12">
+
+                        <script type="text/javascript">
+                            function handleMessage(facesmessage) {
+                                if (facesmessage === " " || facesmessage === null) {
+                                    return;
+                                } else {
+                                    if (facesmessage !== " " || facesmessage !== null) {
+                                        facesmessage.severity = 'info';
+                                        PF('wmsj').show([facesmessage]);
+                                        return;
+                                    }
+                                }
+                            }
+                            ;
+                        </script>
+
+
+                        <script type="text/javascript">
+                            function handleMessageAux(message) {
+                                message.severity = 'warn';
+                            }
+                        </script>
+
+                        <script type="text/javascript">
+                            function handleMessageServicoSenhas(message) {
+                                message.severity = 'warn';
+                            }
+                        </script>
+
+
+                        <o:socket channel="atualizarlistagridatendimento" 
+                                  onmessage="handleMessageServicoSenhas"
+                                  connected="true"
+                                  >
+                            <p:ajax event="atualizarlistagridatendimento"
+                                    update=":consultarmonitor:overviewTableUserMonitor"
+                                    listener="#{monitorChamadaClienteListarMB.listarMonitorSenhasTodosTriagemChamadaCliente}"
+                                    />
+                        </o:socket>
+
+                        <o:socket channel="usuarioservicosenhaspushmb" 
+                                  onmessage="handleMessageServicoSenhas"
+                                  connected="true"
+                                  >
+                            <p:ajax event="usuarioservicosenhaspushmb"
+                                    update=":consultarmonitor:overviewTableUserMonitor"
+                                    listener="#{monitorChamadaClienteListarMB.listarMonitorSenhasTodosTriagemChamadaCliente}"
+                                    />
+                        </o:socket>
+
+                        <o:socket channel="triagemchamadaclientepushmbmb" 
+                                  onmessage="handleMessageAux"
+                                  connected="true"
+                                  >
+                            <p:ajax event="triagemchamadaclientepushmbmb"
+                                    update=":consultarmonitor:overviewTableUserMonitor"
+                                    listener="#{monitorChamadaClienteListarMB.listarMonitorSenhasTodosTriagemChamadaCliente}"
+                                    />
+                        </o:socket>
+
+                        <o:socket channel="triagemchamadaclienteprioriconvpushmbmb" 
+                                  onmessage="handleMessageAux"
+                                  connected="true"
+                                  >
+                            <p:ajax event="triagemchamadaclienteprioriconvpushmbmb"
+                                    update=":consultarmonitor:overviewTableUserMonitor"
+                                    listener="#{monitorChamadaClienteListarMB.listarMonitorSenhasTodosTriagemChamadaCliente()}"
+                                    />
+                        </o:socket>
+
+                        <script type="text/javascript">
+                            function handleMessageSigla(facesmessage) {
+                                facesmessage.severity = 'info';
+                            }
+                        </script>
+
+                        <o:socket channel="triagemalternativapushmb" onmessage="handleMessageSigla" >
+                            <p:ajax event="triagemalternativapushmb" 
+                                    update="@(div[id$=sigla])" 
+                                    listener="#{monitorChamadaClienteMB.listarSiglas()}"/>
+                        </o:socket>
+
+                        <script type="text/javascript">
+                            function handleMessageSiglaAux(facesmessage) {
+                                facesmessage.severity = 'info';
+                            }
+                        </script>
+
+                        <o:socket channel="triagemalternativaauxpushmb" onmessage="handleMessageSiglaAux" >
+                            <p:ajax event="triagemalternativaauxpushmb" 
+                                    update="@(div[id$=sigla])" 
+                                    listener="#{monitorChamadaClienteMB.listarSiglas()}"/>
+                        </o:socket>
+
+                        <o:socket channel="monitorchamadaclientesenhaspushmbmb" 
+                                  onmessage="handleMessage"
+                                  connected="true"
+                                  >
+                            <p:ajax event="monitorchamadaclientesenhaspushmbmb"
+                                    update=":consultarmonitor:overviewTableUserMonitor"
+                                    listener="#{monitorChamadaClienteListarMB.listarMonitorSenhasTodosTriagemChamadaCliente()}"
+                                    />
+                        </o:socket>
+
+                        <o:socket channel="monitorchamadaclientepushauxmbmb" 
+                                  onmessage="handleMessageAux"
+                                  connected="true"
+                                  >
+                            <p:ajax event="monitorchamadaclientepushauxmbmb"
+                                    update=":consultarmonitor:overviewTableUserMonitor"
+                                    listener="#{monitorChamadaClienteListarMB.listarMonitorSenhasTodosTriagemChamadaCliente()}"
+                                    />
+                        </o:socket>
+
+                        <p:dataGrid var="item" 
+                                    value="#{monitorChamadaClienteListarMB.listarMonitorSenhaTransferchamadacliente(loginMB.usuariotransfer.id,monitor,ativoouinativo)}" 
+                                    columns="6"
+                                    layout="grid"
+                                    emptyMessage="Nenhum Registro Encontrado."
+                                    styleClass="responsive-table striped display" 
+                                    rows="36" 
+                                    paginator="true"
+                                    id="overviewTableUserMonitor"
+                                    paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"                                
+                                    paginatorPosition="bottom"	                                 
+                                    currentPageReportTemplate="[ Exibindo de {startRecord} a {endRecord} no total de {totalRecords} - Página: {currentPage}/{totalPages} ]"
+                                    >
+                            <f:facet name="header">
+                                SENHAS - GERADAS
+                            </f:facet>
+                            <p:panel  header="#{item.servicotransfer.nomeservico}"
+                                      style="text-align:center; 
+                                      width: 100%;
+                                      height: 100%;
+                                      font-size: 5px;"
+                                      id="nomeservico">
+                                <h:panelGrid  columns="1"
+                                              style="width:100%">
+                                    <p:commandLink value="#{item.nometriagemachamadacliente}" 
+                                                   update=":consultarmonitor"
+                                                   style="color:#{item.cormonitorsenha};width: 100%"
+                                                   oncomplete="PF('dialogosenhasclientes').show()"
+                                                   title="#{item.nometriagemachamadacliente}"                                                   
+                                                   >
+                                        <f:setPropertyActionListener value="#{item}"
+                                                                     target="#{monitorChamadaClienteMB.triagemchamadaclientetransfer}" />
+                                    </p:commandLink>
+                                </h:panelGrid>
+                            </p:panel>
+                        </p:dataGrid>
+
+                        <p:dialog 
+                            header="ATENDIMENTO"
+                            widgetVar="dialogosenhasclientes"
+                            modal="true" 
+                            styleClass="box-primary"
+                            id="consultaratendimento"
+                            >
+                            <p:outputPanel  id="detalhedialogo" 
+                                            style="text-align:center; width: 100%;height: 100%;" 
+                                            styleClass="box-solid box-info">
+                                <h:panelGrid style="width: 500px; height: 100%;"  columns="2"  cellpadding="5" >
+                                    <h:outputText value="Número:" 
+                                                  class="boldfont"/>
+                                    <h:outputText value="#{monitorChamadaClienteMB.triagemchamadaclientetransfer.nometriagemachamadacliente}" 
+                                                  style="color:#{monitorChamadaClienteMB.triagemchamadaclientetransfer.cormonitorsenha}"
+                                                  class="largefont"
+                                                  id="senhanometriagem"/>
+
+                                    <h:outputText value="Prioridade:"
+                                                  class="boldfont"/>
+                                    <h:outputText value="#{monitorChamadaClienteMB.triagemchamadaclientetransfer.prioridadetriagemachamadacliente}"
+                                                  class="largefont"/>
+
+                                    <h:outputText value="Serviço:" 
+                                                  class="boldfont"/>
+                                    <h:outputText value="#{monitorChamadaClienteMB.triagemchamadaclientetransfer.servicotransfer.nomeservico}"
+                                                  class="largefont"/>
+
+                                    <h:outputText value="Data Chegada:"
+                                                  class="boldfont"/>
+                                    <h:outputText value="#{monitorChamadaClienteMB.triagemchamadaclientetransfer.datainiciotriagemchamadacliente}"
+                                                  class="largefont">
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                                    </h:outputText>
+
+                                    <h:outputText value="Tempo de Espera:"
+                                                  class="boldfont"/>
+                                    <h:outputText value="#{monitorChamadaClienteMB.triagemchamadaclientetransfer.tempodeesperatriagemchamadacliente}"
+                                                  class="largefont"/>
+
+                                    <h:outputText value="Situação:"
+                                                  class="boldfont"/>
+                                    <h:outputText value="#{monitorChamadaClienteMB.triagemchamadaclientetransfer.emitirsenhatriagemchamadacliente}"
+                                                  class="largefont"/>
+                                </h:panelGrid>
+                            </p:outputPanel>
+
+                            <p:spacer height="30px"/>
+
+                            <p:separator/>
+
+                            <p:commandButton  value="Transferir / Alterar Senha"
+                                              icon="fa fa-check"
+                                              update=":consultarmonitor"
+                                              oncomplete="PF('transeferirdialogosenhasclientes').show()"
+                                              styleClass="btn-primary"
+                                              rendered="#{monitorChamadaClienteListarMB.ativoOhInativoBotao}"/>
+
+                            <p:spacer width="10" height="10" />
+
+                            <p:commandButton value="Cancelar Senha" 
+                                             action="#{monitorChamadaClienteMB.deletarTriagemChamadaCliente}"
+                                             update=":consultarmonitor"
+                                             ajax="true"
+                                             icon="fa fa-trash"
+                                             styleClass="btn-danger"
+                                             rendered="#{monitorChamadaClienteListarMB.ativoOhInativoBotao}">
+                                <f:param name="nometriagemachamadacliente" value="#{monitorChamadaClienteMB.triagemchamadaclientetransfer.nometriagemachamadacliente}"/>
+                            </p:commandButton>
+
+                            <p:spacer width="10" height="10"/>
+
+                            <p:commandButton  value="Imprimir Senha"
+                                              icon="fa fa-print"
+                                              update="@form"
+                                              styleClass="btn-warning"
+                                              action="#{monitorChamadaClienteMB.imprimirSenha()}"
+                                              id="botaoimprimirsenharelatorio"
+                                              ajax="false"
+                                              onclick="this.form.target = '_blank'"
+                                              rendered="#{monitorChamadaClienteListarMB.ativoOhInativoBotao}"
+                                              >
+                                <f:param name="senhanometriagemachamadacliente" value="#{monitorChamadaClienteMB.triagemchamadaclientetransfer.nometriagemachamadacliente}"/>
+                            </p:commandButton>
+                        </p:dialog>
+
+                        <p:dialog 
+                            header="TRANSFERIR SENHA"
+                            widgetVar="transeferirdialogosenhasclientes"
+                            modal="true" 
+                            styleClass="box-primary"
+                            id="transeferirsenha"
+                            >
+
+                            <h:outputText value="Número:" 
+                                          class="boldfont"/>
+                            <h:outputText id="nometriagemachamadacliente"
+                                          value="#{monitorChamadaClienteMB.triagemchamadaclientetransfer.nometriagemachamadacliente}" 
+                                          style="color:#{monitorChamadaClienteMB.triagemchamadaclientetransfer.cormonitorsenha}"
+                                          class="largefont"
+                                          />
+                            <p:separator/>
+
+                            <p:outputPanel  id="transferirdetalhedialogo" 
+                                            style="text-align:center; width: 100%;height: 100%;"
+                                            styleClass="box-solid box-info">
+
+                                <h:panelGrid style="width: 500px; height: 100%;"
+                                             columns="3"
+                                             id="panelgridservico"
+                                             >
+
+                                    <p:outputLabel for="sigla" value="Sigla-Serviço"/> 
+                                    <p:selectOneMenu id="sigla" 
+                                                     value="#{monitorChamadaClienteMB.triagemchamadaclientetransfer.siglatriagemalternativa}"
+                                                     panelStyle="width:180px"
+                                                     filter="true"
+                                                     filterMatchMode="startsWith"
+                                                     >
+                                        <f:selectItems value="#{monitorChamadaClienteMB.getListarsiglas(loginMB.usuariotransfer.id)}"
+                                                       />
+                                    </p:selectOneMenu>
+
+                                    <p:spacer height="50px"/>
+
+
+                                    <p:outputLabel for="prioridade" value="Prioridade"/>
+                                    <p:selectOneMenu id="prioridade" value="#{monitorChamadaClienteMB.triagemchamadaclientetransfer.prioridadechamadatriagemchamadacliente}" >
+                                        <f:selectItem itemLabel="CONVENCIONAL" itemValue="CONVENCIONAL"/>
+                                        <f:selectItem itemLabel="PRIORIDADE" itemValue="PRIORIDADE"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                            </p:outputPanel>
+
+                            <p:separator/>
+
+                            <p:button styleClass="btn-material pull-left fa fa-times" 
+                                      value="Fechar" 
+                                      onclick="PF('transeferirdialogosenhasclientes').hide();
+                                              return false"/>
+
+                            <!-- ajax="false" onclick="this.form.target = '_blank'" foram removidos"-->
+                            <p:commandButton  action="#{monitorChamadaClienteMB.alterarOuTransferirSenha}" 
+                                              value="Confirmar"
+                                              icon="fa fa-check"
+                                              styleClass="btn-primary pull-right"
+                                              update=":consultarmonitor"
+                                              ajax="true"
+                                              >
+                                <f:param name="nometriagemachamadaclienteprincipal" value="#{monitorChamadaClienteMB.triagemchamadaclientetransfer.nometriagemachamadacliente}"/>
+                                <f:param name="nomeusuario" value="#{loginMB.usuariotransfer.nomeusuario}"/>
+                            </p:commandButton>
+                        </p:dialog>
+
+                    </div>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

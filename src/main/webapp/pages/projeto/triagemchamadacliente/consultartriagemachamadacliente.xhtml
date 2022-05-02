@@ -1,0 +1,328 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" 
+                xmlns:o="http://omnifaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:define name="head-end">
+        <ui:param name="renderBreadCrumb" value="false"/>
+        <style type="text/css">
+            .ui-grid-row .ui-grid-col-2,
+            .ui-grid-row .ui-grid-col-10 {
+                padding: 0.5em 0;
+                margin-left: 10px;
+            }
+
+            .ui-orderlist .ui-orderlist-list {
+                height: auto;
+            }
+
+            .ui-orderlist .ui-grid-row .ui-grid-col-2,
+            .ui-orderlist .ui-grid-row .ui-grid-col-10 {
+                padding: 0;
+            }
+            .ui-datatable table thead tr {
+                display: none;
+            }
+
+            div.ui-panel .ui-panel-title {
+                display: inline-block;
+                font-size: 15px;
+                margin: 0;
+                line-height: 1;
+                color: #444;
+                font-weight: 500;
+                padding: 8px 5px;
+                font-weight: bold;
+            }
+
+            .middlePanelClass   .ui-widget-content{
+                font-size: 10px;
+                background-color: yellow;
+                font-family: 'Lucida Sans Unicode',Verdana,Arial,Helvetica,sans-serif;
+            }
+            .largefont{
+                font-size: large;
+            }
+            .boldfont{
+                font-size: large;
+                font-weight: bold;
+            }
+            body .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-title,
+            body .ui-dialog .ui-dialog-titlebar .ui-dialog-title{
+                float: left;
+                font-size: larger;
+                font-weight: 500;
+                color: #444;
+                margin: .3em 16px .3em 0;
+            }
+        </style>
+
+
+    </ui:define>
+
+    <ui:define name="title">
+        Triagem
+    </ui:define>
+
+    <ui:define name="description">
+        Gerencie a Distribuição das Senhas da Unidade Atual...
+    </ui:define>
+
+    <ui:define name="body">
+
+        <div class="box box-primary right">
+            <div class="box-header with-border right">
+                <h:form prependId="false" rendered="#{((loginMB.ativartriagemchamadacliente) and (loginMB.ativo==(true)))}">
+                    <p:commandButton
+                        onclick="PF('visualizarsenhas').show();"
+                        icon="fa fa-key"
+                        value="Senhas Distribuídas"
+                        type="button"
+                        styleClass="btn-primary"
+                        update=":visualizarsenhasservicos:overviewTableUserTriagemSenhas"
+                        process="@this"
+                        immediate="true"/>
+                    <p:separator/>
+
+                    <script type="text/javascript">
+                        function handleMessageAtualizarQuantidade(facesmessage) {
+                            facesmessage.severity = 'info';
+                            //PF('wmsj').show([facesmessage]);                            
+                        }
+                    </script>
+
+                    <o:socket channel="triagemchamadaprincipalclientepushmbmb" 
+                              onmessage="handleMessageAtualizarQuantidade" >
+                        <p:ajax event="triagemchamadaprincipalclientepushmbmb"
+                                update=":visualizarsenhasservicos:overviewTableUserTriagemSenhas"
+                                listener="#{triagemChamadaClienteMB.listarQuantidadeSenhasTodosTriagemChamadaCliente}"
+                                />
+                    </o:socket>
+
+                    <o:socket channel="usuarioservicosenhaspushmb" 
+                              onmessage="handleMessageAtualizarQuantidade" >
+                        <p:ajax event="usuarioservicosenhaspushmb"
+                                update=":visualizarsenhasservicos:overviewTableUserTriagemSenhas"
+                                listener="#{triagemChamadaClienteMB.listarQuantidadeSenhasTodosTriagemChamadaCliente}"
+                                />
+                    </o:socket>
+
+                    <o:socket channel="atualizarlistagridatendimentob" 
+                              onmessage="handleMessageAtualizarQuantidade" >
+                        <p:ajax event="atualizarlistagridatendimento"
+                                update=":visualizarsenhasservicos:overviewTableUserTriagemSenhas"
+                                listener="#{triagemChamadaClienteMB.listarQuantidadeSenhasTodosTriagemChamadaCliente}"
+                                />
+                    </o:socket>
+
+                </h:form>
+
+                <p:dialog 
+
+                    widgetVar="visualizarsenhas"
+                    appendTo="@(body)"
+                    modal="true" 
+                    minimizable="true"
+                    id="dialogo"
+                    maximizable="true"
+                    resizable="true"
+                    styleClass="box-primary"
+                    showEffect="explode" 
+                    hideEffect="bounce"
+                    style="text-align: center;"
+                    rendered="#{((loginMB.ativartriagemchamadacliente) and (loginMB.ativo==(true)))}">
+
+                    <h:form  id="visualizarsenhasservicos" rendered="#{((loginMB.ativartriagemchamadacliente) and (loginMB.ativo==(true)))}">
+
+                        <div class="col-xs-12">
+
+                            <p:spacer height="20px"/>
+
+                            <p:dataTable var="item" 
+                                         value="#{triagemChamadaClienteMB.getListarsenhatransferchamadacliente(loginMB.usuariotransfer.id)}"
+                                         emptyMessage="Nenhum Registro Encontrado."
+                                         styleClass="responsive-table striped display" 
+                                         id="overviewTableUserTriagemSenhas"			 	                                 
+                                         paginatorPosition="bottom"	
+                                         >
+                                <f:facet name="header">
+                                    SENHAS GERADAS (NORMAL/PRIORIDADE)
+                                </f:facet>
+                                <p:column styleClass="align-center">
+                                    <h:outputText value="#{item.servicotransfer.nomeservico}" style="font-size: 100%" />
+                                    (<h:outputText value="#{item.siglatriagemalternativa}" style="font-size: 100%"/>)
+                                </p:column>
+                                <p:column styleClass="align-center">
+                                    (<h:outputText value="#{item.quantidadetriagemchamadaclientenormal}"/>/<h:outputText value="#{item.quantidadetriagemchamadaclienteprioridade}"/>)
+                                </p:column>
+                            </p:dataTable>
+
+                        </div>
+
+                        <script type="text/javascript">
+                            function handleMessage(facesmessage) {
+                                facesmessage.severity = 'info';
+                                //PF('wmsj').show([facesmessage]);
+                            }
+                        </script>
+
+                        <o:socket channel="triagemchamadaprincipalclientepushmbmb" 
+                                  onmessage="handleMessage" >
+                            <p:ajax event="triagemchamadaprincipalclientepushmbmb"
+                                    update=":visualizarsenhasservicos:overviewTableUserTriagemSenhas"
+                                    listener="#{triagemChamadaClienteMB.listarQuantidadeSenhasTodosTriagemChamadaCliente}"
+                                    />
+                        </o:socket>
+                    </h:form>
+                </p:dialog>
+
+
+
+                <h:form  id="consultar" prependId="true" rendered="#{((loginMB.ativartriagemchamadacliente) and (loginMB.ativo==(true)))}">
+
+                    <p:panel class="ui-g-12">
+                        <legend>Pesquisar</legend>
+                        <div class="ui-g-12">
+                            <div class="ui-g-12 ui-md-4">
+                                <div class="ui-inputgroup">
+                                    <p:inputText placeholder="Nome do Serviço"
+                                                 value="#{nomeservico}"
+                                                 />
+                                    <p:commandButton 
+                                        update="@(div[id$=overviewTableUserTriagemAlternativaChamadaCliente])" 
+                                        action="#{triagemChamadaClienteMB.consultarAction(loginMB.usuariotransfer.id,nomeservico)}"                                        
+                                        icon="fa fa-search"
+                                        styleClass="btn-info"/>
+
+                                </div>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                    <p:spacer height="20px"/>
+
+                    <p:dataTable var="item" value="#{triagemChamadaClienteMB.getListartransferchamadacliente(loginMB.usuariotransfer.id,nomeservico)}"
+                                 emptyMessage="Nenhum Registro Encontrado."
+                                 styleClass="responsive-table striped display" 
+                                 id="overviewTableUserTriagemAlternativaChamadaCliente"			 	                                 
+                                 paginatorPosition="bottom"	                                 
+                                 >
+
+                        <f:facet name="header">
+                            SERVIÇOS - GERADOS
+                        </f:facet>
+
+                        <p:column styleClass="align-center" colspan="1">
+                            <h:outputText value="#{item.servicotransfer.nomeservico}" style="font-size: 100%" />
+                            (<h:outputText value="#{item.siglatriagemalternativa}" style="font-size: 100%"/>)
+                        </p:column>
+
+                        <p:column styleClass="align-center" colspan="1">
+
+                            <p:commandButton 
+                                value="#{triagemChamadaClienteMB.triagemchamadaclientetransfer.normalchamadatriagemchamadacliente}"
+                                action="#{triagemChamadaClienteMB.inserirConvencionalTriagemChamadaCliente()}"
+                                styleClass="btn-primary"                                                                                            
+                                title="Distribuir senha normal"
+                                oncomplete="PF('dialogosenhasclientes').show(); return false;"                                
+                                >    
+                                <f:setPropertyActionListener value="#{item}" target="#{triagemChamadaClienteMB.triagemchamadaclientetransfer}"/>
+                            </p:commandButton>
+
+                            <p:spacer width="10" height="10"/>
+
+                            <p:commandButton                                      
+                                action="#{triagemChamadaClienteMB.inserirPrioridadeTriagemChamadaCliente()}"
+                                styleClass="btn btn-danger"
+                                value="#{triagemChamadaClienteMB.triagemchamadaclientetransfer.prioridadechamadatriagemchamadacliente}"
+                                title="Distribuir senha de prioridade"                                
+                                id="botaoprioridade"
+                                oncomplete="PF('dialogosenhasclientes').show(); return false;"                                
+                                >
+                                <f:setPropertyActionListener value="#{item}" target="#{triagemChamadaClienteMB.triagemchamadaclientetransfer}"/>
+                            </p:commandButton>
+
+                        </p:column>
+                    </p:dataTable>
+
+                    <p:dialog 
+                        header="SENHA GERADA"
+                        widgetVar="dialogosenhasclientes"
+                        modal="true" 
+                        styleClass="box-primary"
+                        id="consultaratendimento"
+                        >
+                        <p:outputPanel  id="detalhedialogo" 
+                                        style="text-align:center; width: 100%;height: 100%;" 
+                                        styleClass="box-solid box-info">
+
+                            <h:panelGrid style="width: 100%; height: 100%;"  
+                                         columns="2"
+                                         cellpadding="4" >                             
+                                <h:outputText value="#{loginMB.usuariotransfer.sobrenomeusuario.toUpperCase()} ! Deseja Visualizar a Senha Emitida Para o Atendimento ?" />                                                                                                                               
+                            </h:panelGrid>
+
+                        </p:outputPanel>
+
+                        <p:spacer height="10px"/>
+
+                        <p:separator/>
+
+                        <p:button styleClass="btn-material pull-left fa fa-times" 
+                                  value="Fechar" 
+                                  style="width: auto;"
+                                  onclick="PF('dialogosenhasclientes').hide();
+                                          return false"/>
+
+                        <p:spacer width="200" height="10"/>
+
+                        <p:commandButton  icon="fa fa-print"
+                                          style="width: auto"
+                                          update="@form"
+                                          styleClass="btn-warning"
+                                          action="#{triagemChamadaClienteMB.imprimirSenha()}"
+                                          id="botaoimprimirsenharelatorio"
+                                          ajax="false"
+                                          title="Visualizar/Imprimir Senha"
+                                          onclick="this.form.target = '_blank'"
+                                          value="#{triagemChamadaClienteMB.triagemchamadaclientetransfer.nometriagemachamadacliente}"
+                                          >
+                           <!-- <f:param name="senhanometriagemachamadacliente" value="#{triagemChamadaClienteMB.triagemchamadaclientetransfer.nometriagemachamadacliente}"/> -->                         
+                        </p:commandButton>
+
+                    </p:dialog>
+
+                    <script type="text/javascript">
+                        function handleMessage(facesmessage) {
+                            facesmessage.severity = 'info';
+                        }
+                    </script>
+
+                    <o:socket channel="triagemalternativapushmb" onmessage="handleMessage" >
+                        <p:ajax event="triagemalternativapushmb" 
+                                update=":consultar:overviewTableUserTriagemAlternativaChamadaCliente" 
+                                listener="#{triagemChamadaClienteMB.listarTodosTriagemChamadaCliente}"/>
+                    </o:socket>
+
+                    <script type="text/javascript">
+                        function handleMessageTriagem(facesmessage) {
+                            facesmessage.severity = 'info';
+                            //history.go(0);
+                        }
+                    </script>
+
+                    <o:socket channel="triagemchamadaclientepushmbaux"
+                              onmessage="handleMessageTriagem" >
+                        <p:ajax event="triagemchamadaclientepushmbaux" 
+                                update=":consultar:overviewTableUserTriagemAlternativaChamadaCliente" 
+                                />
+                    </o:socket>
+
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

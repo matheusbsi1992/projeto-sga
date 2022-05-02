@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?> <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:adm="http://github.com/adminfaces"
+
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <h:head>
+        <meta charset="utf-8" />
+
+        <!--<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>-->
+        <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
+     <!--   <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/highcharts-more.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/export-data.js"></script>
+-->
+        <title></title>
+
+
+    </h:head>
+
+    <body>
+
+
+        <h1>OLA</h1>
+        <h:form id="casa">
+
+            <p:panelGrid>
+                <script type="text/javascript">
+
+                   
+
+
+                    function gerarGraficoPizza(title, seriesName, seriesData) {
+                        alert('entrou aui pizza');
+                        $('#container').highcharts({
+                            chart: {
+                                plotBackgroundColor: null,
+                                plotBorderWidth: 1, //null,
+                                plotShadow: false
+                            },
+                            title: {
+                                text: title
+                            },
+                            tooltip: {
+                                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                            },
+                            plotOptions: {
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                                    },
+                                    showInLegend: true
+                                }
+                            },
+                            series: [{
+                                    type: 'pie',
+                                    name: seriesName,
+                                    data: seriesData
+                                }]
+                        });
+                    }
+                </script>
+
+
+                <p:commandButton icon="ui-icon-extlink" value="Pie"   action="#{chartController.listarValores()}" oncomplete="gerarGraficoPizza('Grafico', 'seriesName', #{chartController.chartData})">
+                    <p:poll interval="1" 
+                            delay="none"
+                            id="chartvalue_btn"
+                            update=":casa"
+                            stop="#{chartController.valorexiste}"
+                            autoStart="true"
+                            />
+                </p:commandButton>
+                <div jsf:id="container"  id="container" style="min-width: 400px; max-width: 600px; height: 400px; margin: 0 auto"></div>
+
+
+            </p:panelGrid>
+
+        </h:form>
+    </body>
+</html>

@@ -1,0 +1,186 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:adm="http://github.com/adminfaces"
+                xmlns:o="http://omnifaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:define name="head-end">
+        <ui:param name="renderBreadCrumb" value="false"/>
+        <style type="text/css">
+            .ui-grid-row .ui-grid-col-2,
+            .ui-grid-row .ui-grid-col-10 {
+                padding: 0.5em 0;
+                margin-left: 10px;
+            }
+
+            .ui-orderlist .ui-orderlist-list {
+                height: auto;
+            }
+
+            .ui-orderlist .ui-grid-row .ui-grid-col-2,
+            .ui-orderlist .ui-grid-row .ui-grid-col-10 {
+                padding: 0;
+            }
+            body .ui-datatable tbody > tr.ui-widget-header > td, body .ui-treetable tbody > tr.ui-widget-header > td {
+                border-color: #f4f4f4 !important;
+                font-weight: 600;
+                border: none;
+                border-top-color: currentcolor;
+                border-right-color: currentcolor;
+                border-bottom-color: currentcolor;
+                border-left-color: currentcolor;
+            }
+        </style>
+
+    </ui:define>
+
+    <ui:define name="title">
+        Usuário
+    </ui:define>
+
+    <ui:define name="description">
+        Gerencie os Usuários do Sistema, Cargo e Seus Serviços... 
+    </ui:define>
+
+    <ui:define name="body">
+
+        <div class="box box-primary right">
+            <div class="box-header with-border right">
+                <h:form rendered="#{((loginMB.ativarusuario) and (loginMB.ativo==(true)))}">
+                    <p:commandButton action="inserirusuario?faces-blackirect=true" ajax="false" icon="fa fa-plus"
+                                     value="Novo" styleClass="btn-primary"/>
+                    <p:separator/>
+                </h:form>
+
+                <h:form id="consultar" rendered="#{((loginMB.ativarusuario) and (loginMB.ativo==(true)))}">
+                    <p:panel class="ui-g-12">
+                        <legend>Pesquisar</legend>
+                        <div class="ui-g-12">
+                            <div class="ui-g-12 ui-md-4">
+                                <div class="ui-inputgroup">
+                                    <p:inputText placeholder="Nome" value="#{usuarioListarMB.nomedeusuario}"/>
+                                    <p:commandButton update=":consultar:overviewTableUserUsuario" ajax="false" actionListener="#{usuarioListarMB.consultarAction()}" icon="fa fa-search" styleClass="btn-info"/>
+                                </div>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                    <p:spacer height="20px"/>
+
+                    <p:dataTable var="item" value="#{usuarioListarMB.listarusuarios}"
+                                 emptyMessage="Nenhum Registro Encontrado."
+                                 styleClass="responsive-table striped display" 
+                                 id="overviewTableUserUsuario"                                 
+                                 paginator="true"
+                                 rows="10"	                    			 	                                 
+                                 paginatorPosition="bottom"	                                 
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="[ Exibindo de {startRecord} a {endRecord} no total de {totalRecords} - Página: {currentPage}/{totalPages} ]"
+                                 rowsPerPageTemplate="5,10,15,20,30"
+                                 >
+                        <p:headerRow groupBy="#{item.nomeusuario}"
+                                     expandable="true">
+                            <p:column headerText="Nome">
+                                <h:outputText value="#{item.nomeusuario}"/>
+                            </p:column>
+
+                            <p:column>
+                                <h:outputText value="#{item.sobrenomeusuario}"/>
+                            </p:column>
+
+                            <p:column>
+                                <h:outputText value="#{item.cargo.nomecargo}"/>
+                            </p:column>
+
+                            <p:column>
+                                <h:outputText value="#{item.statususuario}"/>
+                            </p:column>
+
+                            <p:column>
+                                <p:commandButton id="idexcluir" 
+                                                 action="#{usuarioMB.deletarUsuario(item.id)}" 
+                                                 icon="fa fa-trash"
+                                                 update=":consultar:overviewTableUserUsuario"
+                                                 title="Excluir"
+                                                 delay="1000">
+                                    <p:confirm header="Exclusão" message="Deseja realmente excluir este Usuário: #{item.nomeusuario}? Isto acarretará problemas no futuro!" icon="ui-icon-alert"/>
+                                </p:commandButton>
+
+                                <p:spacer width="10" height="10"/>
+
+                                <p:commandButton id="ideditarcargo" 
+                                                 action="#{usuarioMB.editarUsuario()}" 
+                                                 icon="fa fa-pencil" 
+                                                 update=":consultar:overviewTableUserUsuario"
+                                                 process="@this"
+                                                 title="Editar"
+                                                 delay="1000">
+                                    <p:confirm header="Edição" message="Deseja Editar Este Usuário: #{item.nomeusuario} ?" icon="ui-icon-alert"/>
+                                    <f:setPropertyActionListener value="#{item}" target="#{usuarioMB.usuariotransfer}" rendered="false"/>
+                                </p:commandButton>
+
+                                <p:spacer width="10" height="10"/>
+
+                            </p:column>
+                        </p:headerRow>
+
+                        <p:column colspan="5" headerText="Usuário, Cargo e seus Serviços"  styleClass="align-center">
+                            <h:outputText value="#{item.servico.nomeservico}" />
+                        </p:column>
+
+
+
+                    </p:dataTable>
+
+                    <p:confirmDialog responsive="true"  global="true" showEffect="fade" hideEffect="fade" styleClass="box-solid box-info">
+                        <p:commandButton value="Não" type="button" styleClass="btn btn-danger ui-confirmdialog-no"
+                                         icon="fa fa-close"
+                                         />
+                        <p:commandButton value="Sim" type="button" styleClass="btn btn-primary ui-confirmdialog-yes"
+                                         icon="fa fa-check"
+                                         />                                
+                    </p:confirmDialog>
+
+                    <script type="text/javascript">
+                        function handleMessage(facesmessage) {
+                            facesmessage.severity = 'info';
+                        }
+                    </script>
+
+                    <o:socket channel="usuariopushmb"  
+                              onmessage="handleMessage">
+                        <p:ajax event="usuariopushmb" 
+                                update=":consultar:overviewTableUserUsuario"
+                                listener="#{usuarioListarMB.listarTodosUsuario()}"/>
+                    </o:socket>
+
+                    <o:socket channel="servicopushmb" 
+                              onmessage="handleMessage">
+                        <p:ajax event="servicopushmb" 
+                                update=":consultar:overviewTableUserUsuario"
+                                listener="#{usuarioListarMB.listarTodosUsuario()}"
+                                />
+                    </o:socket>
+
+                    <o:socket channel="cargopushmb"
+                              onmessage="handleMessage">
+                        <p:ajax event="cargopushmb" 
+                                update=":consultar:overviewTableUserUsuario"
+                                listener="#{usuarioListarMB.listarTodosUsuario()}"/>
+                    </o:socket>
+
+                    <o:socket channel="unidadepushmb"
+                              onmessage="handleMessage">
+                        <p:ajax event="unidadepushmb" 
+                                update=":consultar:overviewTableUserUsuario"
+                                listener="#{usuarioListarMB.listarTodosUsuario()}"/>
+                    </o:socket>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

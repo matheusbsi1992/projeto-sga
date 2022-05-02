@@ -1,0 +1,54 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:adm="http://github.com/adminfaces"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:define name="head-end">
+        <ui:param name="renderBreadCrumb" value="false"/>
+    </ui:define>
+
+    <ui:define name="title">
+        Cadastrar Vídeo
+    </ui:define>
+
+    <ui:define name="description">
+        Gerencie o Vídeo do Sistema...
+    </ui:define>
+
+    <ui:define name="body">
+
+        <f:metadata>
+        </f:metadata>
+        <div class="box box-primary">
+
+            <div class="box-header with-border">
+                <h:form id="formulario" rendered="#{((loginMB.ativarpainelatendimento) and (loginMB.ativo==(true)))}">
+
+
+                    <div class="ui-g-12">
+                        <div class="ui-g-12">
+                            <p:outputLabel for="idvideo" value="Id Vídeo*"/> 
+                            <p:inputText id="idvideo" value="#{triagemAtendimentoClienteVideoMB.idlink}" validator="#{triagemAtendimentoClienteVideoMB.validarIdVideo}" styleClass="form-control"/>                                            
+                            <p:message for="idvideo"/>
+                        </div>
+                    </div>
+                    <div class="ui-g-12">
+                        <p:spacer height="20"/>
+                        <p:separator/>
+                        <p:commandButton  action="#{triagemAtendimentoClienteVideoMB.inserirIdVideo()}"
+                                          value="Inserir Link"
+                                          ajax="false" 
+                                          icon="fa fa-check"
+                                          styleClass="btn-primary pull-right"/>
+                    </div>
+
+                </h:form>
+            </div>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

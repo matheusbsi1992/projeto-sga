@@ -1,0 +1,159 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:adm="http://github.com/adminfaces"
+                xmlns:o="http://omnifaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:define name="head-end">
+        <ui:param name="renderBreadCrumb" value="false"/>
+        <style type="text/css">
+            .ui-grid-row .ui-grid-col-2,
+            .ui-grid-row .ui-grid-col-10 {
+                padding: 0.5em 0;
+                margin-left: 10px;
+            }
+
+            .ui-orderlist .ui-orderlist-list {
+                height: auto;
+            }
+
+            .ui-orderlist .ui-grid-row .ui-grid-col-2,
+            .ui-orderlist .ui-grid-row .ui-grid-col-10 {
+                padding: 0;
+            }
+        </style>
+
+    </ui:define>
+
+    <ui:define name="title">
+        Triagem Alternativa
+    </ui:define>
+
+    <ui:define name="description">
+        Gerencie os Serviços com os Seus Locais de Atendimento...
+    </ui:define>
+
+    <ui:define name="body">
+
+        <div class="box box-primary right">
+            <div class="box-header with-border right">
+                <h:form rendered="#{((loginMB.ativartriagemalternativa) and (loginMB.ativo==(true)))}">
+                    <p:commandButton action="inserirtriagemalternativa.xhtml?faces-blackirect=true" ajax="false" icon="fa fa-plus"
+                                     value="Novo" styleClass="btn-primary"/>
+                    <p:separator/>
+                </h:form>
+
+                <h:form id="consultar" rendered="#{((loginMB.ativartriagemalternativa) and (loginMB.ativo==(true)))}">
+                    <p:panel class="ui-g-12">
+                        <legend>Pesquisar</legend>
+                        <div class="ui-g-12">
+                            <div class="ui-g-12 ui-md-4">
+                                <div class="ui-inputgroup">
+                                    <p:inputText placeholder="Nome" value="#{triagemAlternativaListarMB.nomesigla}"/>
+                                    <p:commandButton update=":mensagem :consultar:overviewTableUser" ajax="false" actionListener="#{triagemAlternativaListarMB.consultarAction()}" icon="fa fa-search" styleClass="btn-info"/>
+                                </div>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                    <p:spacer height="20px"/>
+
+                    <p:dataTable var="item" value="#{triagemAlternativaListarMB.listartriagemalternativa}"
+                                 emptyMessage="Nenhum Registro Encontrado."
+                                 styleClass="responsive-table striped display" 
+                                 id="overviewTableUserTriagemAlternativa"
+                                 paginator="true"
+                                 rows="10"	                    			 	                                 
+                                 paginatorPosition="bottom"	                                 
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="[ Exibindo de {startRecord} a {endRecord} no total de {totalRecords} - Página: {currentPage}/{totalPages} ]"
+                                 rowsPerPageTemplate="5,10,15,20,30"
+                                 >
+
+                        <p:column headerText="Sigla"  width="150" styleClass="align-center">
+                            <h:outputText value="#{item.siglatriagemalternativa}" />
+                        </p:column>
+
+                        <p:column headerText="Serviço"  width="150" styleClass="align-center">
+                            <h:outputText value="#{item.servicotransfer.nomeservico}" />
+                        </p:column>
+
+                        <p:column headerText="Local"  width="150" styleClass="align-center">
+                            <h:outputText value="#{item.localtransfer.nomelocal}" />
+                        </p:column>
+
+                        <p:column headerText="Status"  width="150" styleClass="align-center">
+                            <h:outputText value="#{item.statustriagemalternativa}" />
+                        </p:column>
+
+                        <p:column headerText="Opções" styleClass="align-center" width="150">
+                            <p:commandButton id="idexcluirtriaemalternativa" 
+                                             action="#{triagemAlternativaMB.deletarTriagemAlternativa(item.id)}" 
+                                             icon="fa fa-trash"
+                                             update=":consultar"
+                                             title="Excluir"
+                                             delay="1000">
+                                <p:confirm header="Exclusão" message="Deseja realmente excluir esta Triagem Alternativa: #{item.siglatriagemalternativa}? Isto acarretará problemas no futuro!" icon="ui-icon-alert"/>
+                            </p:commandButton>
+
+                            <p:spacer width="10" height="10"/>
+
+                            <p:commandButton id="ideditartriagemalternativa" 
+                                             action="#{triagemAlternativaMB.editarTriagemAlternativa()}" 
+                                             icon="fa fa-pencil"
+                                             title="Editar"
+                                             delay="1000">
+                                <p:confirm header="Edição" message="Deseja Editar esta Triagem Alternativa: #{item.siglatriagemalternativa} ?" icon="ui-icon-alert"/>
+                                <f:setPropertyActionListener value="#{item}" target="#{triagemAlternativaMB.triagemAlternativatransfer}"/>
+                            </p:commandButton>
+
+                              <p:confirmDialog responsive="true"  global="true" showEffect="fade" hideEffect="fade" styleClass="box-solid box-info">
+                                <p:commandButton value="Não" type="button" styleClass="btn btn-danger ui-confirmdialog-no"
+                                                 icon="fa fa-close"
+                                                 />
+                                <p:commandButton value="Sim" type="button" styleClass="btn btn-primary ui-confirmdialog-yes"
+                                                 icon="fa fa-check"
+                                                 />                                
+                            </p:confirmDialog>
+                        </p:column>
+                    </p:dataTable>
+
+                    <script type="text/javascript">
+                        function handleMessage(facesmessage) {
+                            facesmessage.severity = 'info';
+                            //PF('wmsj').show([facesmessage]);
+                        }
+                    </script>
+
+                    <o:socket channel="servicopushmb" onmessage="handleMessage"
+                              connected="true">
+                        <p:ajax event="servicopushmb" 
+                                update=":consultar:overviewTableUserTriagemAlternativa" 
+                                listener="#{triagemAlternativaListarMB.listarTodosTriagemAlternativa()}" />
+                    </o:socket>
+
+
+                    <o:socket channel="triagemalternativapushmb"
+                              connected="true"
+                              onmessage="handleMessage" >
+                        <p:ajax event="triagemalternativapushmb"
+                                update=":consultar:overviewTableUserTriagemAlternativa"
+                                listener="#{triagemAlternativaListarMB.listarTodosTriagemAlternativa()}"/>
+                    </o:socket>
+
+                    <o:socket channel="localpushmb"
+                              onmessage="handleMessage"
+                              >
+                        <p:ajax event="localpushmb" 
+                                update=":consultar:overviewTableUserTriagemAlternativa"
+                                listener="#{triagemAlternativaListarMB.listarTodosTriagemAlternativa()}"/>
+                    </o:socket>
+
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

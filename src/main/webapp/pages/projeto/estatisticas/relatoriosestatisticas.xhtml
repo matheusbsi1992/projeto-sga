@@ -1,0 +1,304 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:define name="head-end">
+
+        <ui:param name="renderBreadCrumb" value="false"/>
+        <style type="text/css">
+            .ui-grid-row .ui-grid-col-2,
+            .ui-grid-row .ui-grid-col-10 {
+                padding: 0.5em 0;
+                margin-left: 10px;
+            }
+
+            .ui-orderlist .ui-orderlist-list {
+                height: auto;
+            }
+
+            .ui-orderlist .ui-grid-row .ui-grid-col-2,
+            .ui-orderlist .ui-grid-row .ui-grid-col-10 {
+                padding: 0;
+            }
+        </style>
+
+
+
+       
+
+    </ui:define>
+
+    <ui:define name="title">
+        Relatórios
+    </ui:define>
+
+    <ui:define name="description">
+        Visualize e Exporte Estastísticas Sobre o Sistema...
+    </ui:define>
+
+    <ui:define name="body">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h:form id="formulariorelatorioestatisticas" rendered="#{((loginMB.ativarestatistica) and (loginMB.ativo==(true)))}">
+
+                    <div class="ui-g-12">
+                        <div class="ui-g-12">
+                            <p:outputLabel for="relatorio" value="Relatório*"/>
+                            <p:selectOneMenu id="relatorio" value="#{relatorioMB.relatoriotransfer.servicoeatendimento}"
+                                             
+                                             >
+                                <f:selectItem itemLabel="Selecione" id="selecionerelatorio" itemValue=""/>
+                                <f:selectItem itemLabel="Serviços Disponíveis - Global" itemValue="relatorioservicoglobal" id="relatorioservicoglobal"/>
+                                <f:selectItem itemLabel="Serviços Codificados" id="relatorioservicodificado" itemValue="relatorioservicodificado"/>
+                                <f:selectItem itemLabel="Serviços Concluídos" id="relatorioservicoconcluido" itemValue="relatorioservicoconcluido"/>
+                                <f:selectItem itemLabel="Atendimentos em Todos Status" id="relatorioatendimentostatus" itemValue="relatorioatendimentostatus"/>
+                                <f:selectItem itemLabel="Tempo médio por Atendente" id="relatorioatempomedioporatendente" itemValue="relatorioatempomedioporatendente"/>
+                            </p:selectOneMenu>
+                            <p:message for="relatorio"/>
+                        </div>
+                    </div>
+
+                    <div id="panelcamporelatorio" 
+                         >
+                        <p:outputPanel 
+                            >
+                            <!--<f:event type="preRenderView" listener="#{relatorioMB.init()}" />-->
+                            <div class="ui-g-12">
+                                <div class="ui-g-12">
+                                    <p:outputLabel for="datainiciorelatorio" value="Data inicial*" />
+                                    <p:calendar inputStyle="width:100%"  locale="pt_BR" pages="2" showOn="button" focusOnSelect="true" pattern="dd/MM/yyyy"  mask="99/99/9999" navigator="true" id="datainiciorelatorio" value="#{relatorioMB.relatoriotransfer.datainicialrelatorio}" validator="#{relatorioMB.validarDataInicial}"/>
+                                    <p:message for="datainiciorelatorio"/>
+                                </div>
+                            </div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-12" >
+                                    <p:outputLabel for="datafinalrelatorio" value="Data final*" />
+                                    <p:calendar inputStyle="width:100%" locale="pt_BR" pages="2" showOn="button" focusOnSelect="true" pattern="dd/MM/yyyy"  mask="99/99/9999" navigator="true" id="datafinalrelatorio" value="#{relatorioMB.relatoriotransfer.datafinallrelatorio}"/>
+                                    <p:message for="datafinalrelatorio"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </div>
+
+                    <div class="ui-g-12">
+                        <div class="ui-g-12">
+                            <p:outputPanel id="relatorioidservico">
+                                <div style=" text-align: center;
+                                     font-size: 150%;">
+                                    <h:outputText value="#{relatorioMB.relatoriotransfer.tipodeservico}"/>
+                                </div>
+                                <p:dataTable var="item" value="#{relatorioMB.relarotiotransfers}"
+                                             emptyMessage="Nenhum Registro Encontrado."
+                                             styleClass="responsive-table striped display" 
+                                             id="arquivorelatorio"
+                                             rendered="#{relatorioMB.ativardatatable}"
+                                             paginator="true"
+                                             rows="10"	                    			 	                                 
+                                             paginatorPosition="bottom"	                                 
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             currentPageReportTemplate="[ Exibindo de {startRecord} a {endRecord} no total de {totalRecords} - Página: {currentPage}/{totalPages} ]"
+                                             rowsPerPageTemplate="5,10,15,20,30"
+                                             >
+
+                                    <p:column headerText="Serviço"
+                                              styleClass="align-center"
+                                              resizable="true"
+                                              width="300"
+                                              rendered="#{relatorioMB.ativarcolunaservico}"
+                                              >
+                                        <h:outputText value="#{item.servicoTransfer.nomeservico}" 
+                                                      />
+                                    </p:column>
+
+                                    <p:column headerText="Total de Atendimentos"
+                                              styleClass="align-center"
+                                              rendered="#{relatorioMB.ativarcolunaquantidadedeatendimentos}"
+                                              width="300"
+                                              >
+                                        <h:outputText value="#{item.quantidadedeservicosatendidos}" />
+                                    </p:column>
+
+                                    <p:column headerText="Status"
+                                              width="300"
+                                              styleClass="align-center"
+                                              rendered="#{relatorioMB.ativarcolunastatus}">
+                                        <h:outputText value="#{item.servicoTransfer.statusservico}" />
+                                    </p:column>
+
+                                    <p:column headerText="Senha"
+                                              styleClass="align-center"
+                                              rendered="#{relatorioMB.ativarsenha}"
+                                              width="300"
+                                              >
+                                        <h:outputText style="color: #{item.cormonitorsenha}"
+                                                      value="#{item.nometriagemachamadacliente}" />
+                                    </p:column>
+
+                                    <p:column headerText="Data"
+                                              styleClass="align-center"
+                                              rendered="#{relatorioMB.ativardatainiciotiradatriagemchamadacliente}"
+                                              width="300"
+                                              >
+                                        <h:outputText value="#{item.datainiciotiradatriagemchamadacliente}" >
+                                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="Data Chegada"
+                                              styleClass="align-center"
+                                              rendered="#{relatorioMB.ativardatachegada}"
+                                              width="300"
+                                              >
+                                        <h:outputText value="#{item.datainiciotriagemchamadacliente}" >
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="Data Chamada"
+                                              rendered="#{relatorioMB.ativardatachamada}"
+                                              styleClass="align-center"
+                                              width="300"
+                                              >
+                                        <h:outputText value="#{item.datachamadatriagemchamadacliente}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="Data Fim"
+                                              rendered="#{relatorioMB.ativardatafim}"
+                                              styleClass="align-center"
+                                              width="300"
+                                              >
+                                        <h:outputText value="#{item.datafimtriagemchamadacliente}" >
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="Duração"
+                                              rendered="#{relatorioMB.ativarduracao}"
+                                              styleClass="align-center"
+                                              width="300"
+                                              >
+                                        <h:outputText value="#{item.duracao}" />
+                                    </p:column>
+
+                                    <p:column headerText="Tempo de Espera"
+                                              rendered="#{relatorioMB.ativartempodeespera}"
+                                              styleClass="align-center"
+                                              width="300"
+                                              >
+                                        <h:outputText value="#{item.tempodeesperatriagemchamadacliente}" />
+                                    </p:column>
+
+                                    <p:column headerText="Status"
+                                              rendered="#{relatorioMB.ativaremitirsenhastatus}"
+                                              styleClass="align-center"
+                                              width="300"
+                                              >
+                                        <h:outputText value="#{item.emitirsenhatriagemchamadacliente}" />
+                                    </p:column>
+
+                                    <p:column headerText="Atendente"
+                                              styleClass="align-center"
+                                              rendered="#{relatorioMB.ativaratendente}"
+                                              width="300">
+                                        <h:outputText value="#{item.usuario}" />
+                                    </p:column>
+
+                                    <p:column headerText="Atendimentos"
+                                              styleClass="align-center"
+                                              rendered="#{relatorioMB.ativarquantidadedeatendimentos}"
+                                              width="300">
+                                        <h:outputText value="#{item.quantidadedeservicosatendidos}" />
+                                    </p:column>
+
+                                    <p:column headerText="Tempo Médio de Espera"
+                                              styleClass="align-center"
+                                              rendered="#{relatorioMB.ativartempomediodeespera}"
+                                              width="300">
+                                        <h:outputText value="#{item.tempomediodeespera}" />
+                                    </p:column>
+
+                                    <p:column headerText="Tempo Médio de Deslocamento"
+                                              styleClass="align-center"
+                                              rendered="#{relatorioMB.ativartempomediodedeslocamento}"
+                                              width="300">
+                                        <h:outputText value="#{item.tempomediodedeslocamento}" />
+                                    </p:column>
+
+                                    <p:column headerText="Tempo Médio de Atendimento"
+                                              styleClass="align-center"
+                                              rendered="#{relatorioMB.ativartempomediodeatendimento}"
+                                              width="300">
+                                        <h:outputText value="#{item.tempomediodeatendimento}" />
+                                    </p:column>
+
+                                    <p:column headerText="Tempo Total"
+                                              styleClass="align-center"
+                                              rendered="#{relatorioMB.ativartempototal}"
+                                              width="300">
+                                        <h:outputText value="#{item.tempototal}" />
+                                    </p:column>
+
+                                </p:dataTable>
+                                <p:outputPanel rendered="#{relatorioMB.ativarpaineldeatendimentoconcluido}">
+                                    <div style="float:right;padding-top: 5px;">
+
+                                        <h:commandLink>
+                                            <p:graphicImage name="/images/xls.png" width="24"/>
+                                            <p:dataExporter type="xls"  
+                                                            target="arquivorelatorio"
+                                                            fileName="#{relatorioMB.relatoriotransfer.tipodeservico}"
+                                                            />
+                                        </h:commandLink>
+
+                                        <p:spacer width="5"/>
+
+                                        <h:commandLink>
+                                            <p:graphicImage name="/images/pdf.png" width="24"/>
+                                            <p:dataExporter type="pdf"
+                                                            target="arquivorelatorio"
+                                                            postProcessor="#{relatorioMB.customizationOptions()}"
+                                                            fileName="#{relatorioMB.relatoriotransfer.tipodeservico}"/>
+                                        </h:commandLink>
+
+                                        <p:spacer width="5"/>
+
+                                        <h:commandLink>
+                                            <p:graphicImage name="/images/csv.png" width="24"/>           
+                                            <p:dataExporter type="csv" 
+                                                            target="arquivorelatorio"  
+                                                            fileName="#{relatorioMB.relatoriotransfer.tipodeservico}"
+                                                            pageOnly="true" />
+                                        </h:commandLink>
+
+                                    </div>
+                                </p:outputPanel>
+
+                            </p:outputPanel>
+
+                        </div>
+                    </div>
+                    <p:spacer width="100px"/>
+
+                    <div class="ui-xs-12">
+                        <p:toolbar>
+                            <f:facet name="left">
+                                <p:commandButton  actionListener="#{relatorioMB.listarRelatorios()}" 
+                                                  value="Gerar relatório"
+                                                  ajax="false"
+                                                  styleClass="btn-primary"
+                                                  async="true"
+                                                  update=":formularioestatisticas:tabview:arquivorelatorio"
+                                                  />
+
+                            </f:facet>
+                        </p:toolbar>
+                    </div>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

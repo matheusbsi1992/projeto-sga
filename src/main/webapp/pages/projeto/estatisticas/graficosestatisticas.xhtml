@@ -1,0 +1,201 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:adm="http://github.com/adminfaces"
+                xmlns:o="http://omnifaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml"
+                xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <ui:define name="head-end">
+        <ui:param name="renderBreadCrumb" value="false"/>
+        <h:outputScript library="js" name="highcharts.js"/>  
+        <h:outputScript library="js" name="highcharts-more.js"/>  
+        <h:outputScript library="js" name="exporting.js"/>
+        <h:outputScript library="js" name="export-data.js"/>
+
+
+
+        <style type="text/css">
+            .ui-grid-row .ui-grid-col-2,
+            .ui-grid-row .ui-grid-col-10 {
+                padding: 0.5em 0;
+                margin-left: 10px;
+            }
+
+            .ui-orderlist .ui-orderlist-list {
+                height: auto;
+            }
+
+            .ui-orderlist .ui-grid-row .ui-grid-col-2,
+            .ui-orderlist .ui-grid-row .ui-grid-col-10 {
+                padding: 0;
+            }
+        </style>
+
+       
+
+    </ui:define>
+
+    <ui:define name="title">
+        Gráficos
+    </ui:define>
+
+    <ui:define name="description">
+        Visualize e Exporte Estatísticas Sobre o Sistema... 
+    </ui:define>
+
+    <ui:define name="body">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h:form id="formulariograficosestatisticas" prependId="false" rendered="#{((loginMB.ativarestatistica) and (loginMB.ativo==(true)))}">
+                    <div class="ui-g-12">
+                        <div class="ui-g-12">
+                            <p:outputLabel for="grafico" value="Gráfico*"/>
+                            <p:selectOneMenu id="grafico" value="#{graficosMB.relatoriotransfer.servicoeatendimento}"
+                                             
+                                             >
+                                <f:selectItem itemLabel="Selecione" id="selecionegrafico" itemValue=""/>
+                                <f:selectItem itemLabel="Atendimentos por Status" itemValue="graficoporstatus" id="graficoporstatus"/>
+                                <f:selectItem itemLabel="Atendimentos por Serviço" itemValue="graficoporatendimentoservico" id="graficoporatendimentoservico"/>
+                            </p:selectOneMenu>
+                            <p:message for="grafico"/>
+                        </div>
+                    </div>
+
+                    <div id="panelcampografico" 
+                         >
+                        <p:outputPanel 
+                            >
+                            <!--<f:event type="preRenderView" listener="#{relatorioMB.init()}" />-->
+                            <div class="ui-g-12">
+                                <div class="ui-g-12">
+                                    <p:outputLabel for="datainiciografico" value="Data inicial*" />
+                                    <p:calendar inputStyle="width:100%"  locale="pt_BR" pages="2" showOn="button" focusOnSelect="true" pattern="dd/MM/yyyy"  mask="99/99/9999" navigator="true" id="datainiciografico" value="#{graficosMB.relatoriotransfer.datainicialrelatorio}" validator="#{graficosMB.validarDataInicial}"/>
+                                    <p:message for="datainiciografico"/>
+                                </div>
+                            </div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-12" >
+                                    <p:outputLabel for="datafinalgrafico" value="Data final*" />
+                                    <p:calendar inputStyle="width:100%" locale="pt_BR" pages="2" showOn="button" focusOnSelect="true" pattern="dd/MM/yyyy"  mask="99/99/9999" navigator="true" id="datafinalgrafico" value="#{graficosMB.relatoriotransfer.datafinallrelatorio}"/>
+                                    <p:message for="datafinalgrafico"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </div>
+
+                    <p:panelGrid rendered="#{graficosMB.recebevaloresstatus}" columns="3" layout="grid" styleClass="showcase-text-align-center"> 
+                        <script type="text/javascript">
+                            function gerarGraficoStatus(title, seriesData) {
+                                $('#atendimentostatus').highcharts({
+                                    chart: {
+                                        plotBackgroundColor: null,
+                                        plotBorderWidth: null,
+                                        plotShadow: false,
+                                        type: 'pie'
+                                    },
+                                    title: {
+                                        text: title
+                                    },
+                                    plotOptions: {
+                                        pie: {
+                                            allowPointSelect: true,
+                                            cursor: 'pointer',
+                                            dataLabels: {
+                                                enabled: true,
+                                                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                                            },
+                                            showInLegend: true
+                                        }
+                                    },
+                                    series: [{
+                                            type: 'pie',
+                                            name: 'Atendimentos Status',
+                                            data: seriesData
+                                        }]
+                                });
+                            }
+                        </script>
+                    </p:panelGrid>
+
+                    <p:panelGrid rendered="#{graficosMB.recebevaloratendimentoservico}" columns="3" layout="grid" styleClass="showcase-text-align-center">
+                        <script type="text/javascript">
+                            function gerarGraficoAtendimentoPorServico(title, seriesData) {
+                                $('#atendimentoporservico').highcharts({
+                                    chart: {
+                                        plotBackgroundColor: null,
+                                        plotBorderWidth: null,
+                                        plotShadow: false,
+                                        type: 'pie'
+                                    },
+                                    title: {
+                                        text: title
+                                    },
+                                    plotOptions: {
+                                        pie: {
+                                            allowPointSelect: true,
+                                            cursor: 'pointer',
+                                            dataLabels: {
+                                                enabled: true,
+                                                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                                            },
+                                            showInLegend: true
+                                        }
+                                    },
+                                    series: [{
+                                            type: 'pie',
+                                            name: 'Atendimentos Por Serviço',
+                                            data: seriesData
+                                        }]
+                                });
+                            }
+                        </script>
+                    </p:panelGrid>
+
+                    <p:panelGrid  rendered="#{graficosMB.recebevaloresstatus==true}" id="painelstatus" columns="3" layout="grid" styleClass="showcase-text-align-center">
+                        <p:poll interval="1"
+                                delay="3"
+                                autoStart="#{graficosMB.recebevaloresstatus}"
+                                oncomplete="gerarGraficoStatus('#{graficosMB.relatoriotransfer.tipodeservico}',#{graficosMB.chartData});" 
+                                listener="#{graficosMB.listarValoresStatus()}" id="chartvaluestatus_btn"
+                                update=":formulariograficosestatisticas"
+                                global="false"
+                                stop="#{graficosMB.recebevaloresstatusstop}"
+                                />
+                        <div id="atendimentostatus" style="min-width: 400px; max-width: 600px; height: 400px; margin: 0 auto;"></div>
+                    </p:panelGrid>
+
+
+                    <p:panelGrid rendered="#{graficosMB.recebevaloratendimentoservico==true}" id="painelrecebeatendimento" columns="3" layout="grid" styleClass="showcase-text-align-center">
+                        <p:poll interval="1"
+                                delay="3"
+                                autoStart="#{graficosMB.recebevaloratendimentoservico}"
+                                oncomplete="gerarGraficoAtendimentoPorServico('#{graficosMB.relatoriotransfer.tipodeservico}',#{graficosMB.chartData});" 
+                                listener="#{graficosMB.listarValoresAtendimentoServico()}" id="chartvalueatendimento_btn"
+                                update=":formulariograficosestatisticas"
+                                global="false"
+                                stop="#{graficosMB.recebevaloratendimentoservicostop}"
+                                />
+                        <div id="atendimentoporservico" style="min-width: 400px; max-width: 600px; height: 400px; margin: 0 auto;"></div>
+                    </p:panelGrid>
+
+                    <p:spacer width="100px"/>
+
+                    <div class="ui-xs-12">
+                        <p:toolbar>
+                            <f:facet name="left">
+                                <p:commandButton  action="#{graficosMB.listarGraficos()}" 
+                                                  value="Gerar gráfico"
+                                                  ajax="false"
+                                                  styleClass="btn-primary"/>
+                            </f:facet>
+                        </p:toolbar>
+                    </div>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

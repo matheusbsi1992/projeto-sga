@@ -1,0 +1,263 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:f="http://java.sun.com/jsf/core">    
+    <ul class="nav navbar-nav">
+
+        <li class="dropdown notifications-menu">
+            <h:link  rendered="#{((loginMB.ativarreiniciarsenha) and (loginMB.ativo==(true)))}"
+                     onclick="PF('dialogoreiniciarsenhas').show(); return  false;"                     
+                     >
+                <i class="fa fa-trash" title="Reiniciar Todas Senhas"></i>
+            </h:link>
+        </li>
+
+        <p:spacer width="10"/>
+
+        <li class="dropdown notifications-menu">
+            <h:link  rendered="#{((loginMB.ativarreiniciarservicosenha) and (loginMB.ativo==(true)))}"
+                     onclick="PF('dialogoreiniciarsenhaservicousuario').show(); return  false;"                     
+                     >
+                <i class="fa fa-eraser" title="Reiniciar Senhas Por Serviço"></i>
+            </h:link>
+        </li>
+
+        <p:spacer width="10"/>
+
+        <li class="dropdown messages-menu">
+            <h:link  outcome="/pages/projeto/atendimento/atendimentochamadacliente.xhtml?faces-redirect=true"
+                     target="_blank"
+                     rendered="#{((loginMB.ativarpainelatendimento) and (loginMB.ativo==(true)))}">
+                <i class="fa fa-rss" title="Visualizar Chamada Painel Senhas"></i>
+            </h:link>
+        </li>
+
+        <p:spacer width="10"/>
+
+        <li class="dropdown notifications-menu">
+            <h:link  outcome="/pages/projeto/atendimento/atendimentovideo.xhtml?faces-redirect=true"
+                     target="_blank"
+                     rendered="#{((loginMB.ativarpainelatendimento) and (loginMB.ativo==(true)))}">
+                <i class="fa fa-youtube-play" title="Meu Vídeo"></i>
+            </h:link>
+        </li>
+
+        <li class="user-footer">
+
+            <p:dialog header="Reiniciar Todas as Senhas Por Serviço ?" 
+                      widgetVar="dialogoreiniciarsenhaservicousuario"
+                      resizable="false"
+                      draggable="false"
+                      appendTo="@(body)"
+                      responsive="true"                      
+                      modal="true"                      
+                      rendered="#{((loginMB.ativarreiniciarservicosenha) and (loginMB.ativo==(true)))}">
+                <h:form id="formularioreiniciarsenhasservicousuario" rendered="#{((loginMB.ativarreiniciarservicosenha) and (loginMB.ativo==(true)))}">                        
+
+                    <p:panelGrid 
+                        columns="10"                                                        
+                        id="gridreiniciarsenhasporservico"
+                        layout="grid" 
+                        styleClass="showcase-text-align-center">
+
+                        <div class="col-xs-12">
+                            <h:outputText styleClass="text-align-center" value="#{loginMB.usuariotransfer.sobrenomeusuario.toUpperCase()} ! Selecione o Serviço para Reiniciar as Senhas." />                                                                                                                               
+                        </div>
+
+                        <div class="col-xs-12">
+                            <p:selectOneMenu id="servico" 
+                                             value="#{servicoMB.servicotransfer.id}"                                             
+                                             styleClass="width:100%"
+                                             filter="true"  
+                                             required="true"
+                                             requiredMessage="SELECIONE SERVIÇO"
+                                             >
+                                <f:selectItem itemLabel="Serviço" itemValue=""/>
+                                <f:selectItems value="#{servicoMB.getUsuarioServicos(loginMB.usuariotransfer.id)}"
+                                               var="servico"
+                                               itemValue="#{servico.id}"
+                                               itemLabel="#{servico.nomeservico}"
+                                               itemDescription="#{servico.nomeservico}"
+                                               
+                                               />
+                            </p:selectOneMenu>
+                            <p:message for="servico"/>
+                        </div>
+
+                        <p:growl life="3000"                                                                                             
+                                 rendered="#{servicoMB.ativargrowlsenhasservico}" />
+
+                    </p:panelGrid>
+
+                    <p:separator/>
+
+                    <p:button styleClass="btn-material pull-left fa fa-times" 
+                              value="Fechar" 
+                              onclick="PF('dialogoreiniciarsenhaservicousuario').hide();
+                                      return false"/>
+
+                    <p:commandButton styleClass="btn-danger pull-right"
+                                     value="Reiniciar"
+                                     update="@(.ui-growl,div[id$=gridreiniciarsenhasporservico])"
+                                     action="#{servicoMB.deletarSenhaServicoUsuario()}"                                     
+                                     process="@form"
+                                     icon="fa fa-refresh"
+                                     ignoreAutoUpdate="true"                                      
+                                     />
+                       
+                    
+
+                </h:form>
+            </p:dialog>
+        </li>
+
+        <li class="user-footer">
+
+            <p:dialog header="Reiniciar Todas as Senhas ?" 
+                      widgetVar="dialogoreiniciarsenhas"
+                      resizable="false"
+                      draggable="false"
+                      appendTo="@(body)"
+                      responsive="true"
+                      modal="true"                      
+                      rendered="#{((loginMB.ativarreiniciarsenha) and (loginMB.ativo==(true)))}">
+                <h:form id="formularioreiniciarsenhas" rendered="#{((loginMB.ativarreiniciarsenha) and (loginMB.ativo==(true)))}">                        
+
+                    <p:panelGrid 
+                        columns="10"                                                        
+                        id="gridreiniciarsenhas"
+                        layout="grid" 
+                        styleClass="showcase-text-align-center">
+
+                        <h:outputText styleClass="text-align-center" value="#{loginMB.usuariotransfer.sobrenomeusuario.toUpperCase()} ! Deseja Reiniciar Todas as Senhas de Atendimento ?" />                                                                                                                               
+
+                        <p:growl life="3000"                                                                                             
+                                 rendered="#{triagemChamadaClienteMB.ativargrowl}"
+                                 />
+                    </p:panelGrid>
+
+                    <p:separator/>
+
+                    <p:button styleClass="btn-material pull-left fa fa-times" 
+                              value="Fechar" 
+                              onclick="PF('dialogoreiniciarsenhas').hide();
+                                      return false"/>
+
+                    <p:commandButton styleClass="btn-danger pull-right"
+                                     value="Reiniciar"
+                                     update="@(.ui-growl,div[id$=gridreiniciarsenhas])"
+                                     action="#{triagemChamadaClienteMB.deletarTriagemChamadaCliente()}"                                     
+                                     process="@form"
+                                     icon="fa fa-refresh"
+                                     ignoreAutoUpdate="true"                                      
+                                     />                                            
+                </h:form>
+            </p:dialog>
+        </li>
+
+        <li class="dropdown user user-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <!--<pe:gravatar id="userImage"
+                             value="nonexisting"/>-->
+                <span class="hidden-xs">#{loginMB.usuariotransfer.sobrenomeusuario.toUpperCase()}
+                    <i class="fa fa-user" aria-hidden="true" title="Usuário Logado"></i>
+                </span>
+            </a>
+            <ul class="dropdown-menu">
+                <li class="user-header">
+                    <div class="hidden-xs">
+                        <!--  <pe:gravatar style="border-radius: 50%"
+                                       value=""/>-->
+                    </div>
+                    <p>
+                        <small>Usuário: #{loginMB.usuariotransfer.nomeusuario.toUpperCase()}</small>
+                        <small>Cargo: #{loginMB.usuariotransfer.cargo.nomecargo}</small>
+                    </p>
+                </li>
+                <li class="user-footer">
+
+                    <h:form id="formulariotopmenu" rendered="#{loginMB.ativo==(true)}">
+                        <div class="pull-left">
+                            <p:commandButton value="Alterar Minha  Senha" 
+                                             oncomplete="PF('dialogoeditarsenha').show()"
+                                             icon="fa fa-key"
+                                             styleClass="btn-warning"
+                                             update="@(div[id$=gridsenhaeditarusuario])"/>
+                            <!--  <h:commandLink actionListener="" styleClass="btn btn-danger"  value="Senha de Acesso"/>-->
+                        </div>
+                    </h:form>
+                    <h:form>
+                        <div class="pull-right">
+                            <p:commandButton      id="logout" 
+                                                  icon="fa fa-sign-out"
+                                                  title="Sair"
+                                                  styleClass="btn-danger"
+                                                  action="#{loginMB.logOff()}">
+                                <p:confirm  header="Logout" message="#{loginMB.usuariotransfer.nomeusuario.toUpperCase()}, Deseja Realmente Fazer Logout no Sistema?" icon="ui-icon-alert"/>
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-solid box-info">
+                                <p:commandButton value="Sim" type="button" styleClass="btn btn-primary ui-confirmdialog-yes"
+                                                 icon="fa fa-check"
+                                                 global="false"/>
+                                <p:commandButton value="Não" type="button" styleClass="btn btn-danger ui-confirmdialog-no"
+                                                 icon="fa fa-close"/>
+                            </p:confirmDialog>
+                        </div>
+                    </h:form>
+
+
+                    <p:dialog header="Alterar Minha Senha de Acesso" 
+                              widgetVar="dialogoeditarsenha"
+                              resizable="false"
+                              draggable="false"
+                              appendTo="@(body)"
+                              responsive="true"
+                              modal="true"
+                              styleClass="dialog-login">
+                        <h:form id="formulariosenhadousuarioalterar">                        
+
+                            <p:panelGrid style="width: 500px; height: 100%;" id="gridsenhaeditarusuario" columns="2" layout="grid" styleClass="no-border ui-fluid">
+                                <p:outputLabel for="password" value="Senha*" />                           
+                                <p:password  id="password" 
+                                             feedback="true"
+                                             promptLabel="Por favor informe Senha"
+                                             weakLabel="Muito fraca"
+                                             goodLabel="Senha razoável"
+                                             strongLabel="Senha forte" 
+                                             inline="true"
+                                             match="senha"
+                                             value="#{loginMB.usuariotransfer.senhausuario}" validator="#{loginMB.validarSenhadoUsuarioAlterar}" styleClass="form-control"
+                                             />
+                                <p:message for="password"/>
+
+                                <p:spacer width="10"/>
+
+                                <p:outputLabel for="senha" value="Confirme a senha*" />
+                                <p:password  id="senha" value="#{loginMB.usuariotransfer.senhaconfirmacao}" styleClass="form-control"/>
+                                <p:message for="senha"/>
+                                <p:growl  life="3000" rendered="#{loginMB.ativargrowltopmenu}"/>
+                            </p:panelGrid>
+
+                            <p:separator/>
+                            <p:button styleClass="btn-material pull-left" 
+                                      value="Fechar" 
+                                      onclick="PF('dialogoeditarsenha').hide();
+                                              return false"/>
+                            <p:commandButton styleClass="btn-primary btn-material pull-right"
+                                             value="Alterar"
+                                             update="@(.ui-growl,div[id$=gridsenhaeditarusuario])"
+                                             action="#{loginMB.alterarSenhadoUsuario()}"
+                                             ignoreAutoUpdate="true"
+                                             >
+                            </p:commandButton>
+
+                        </h:form>
+                    </p:dialog>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</ui:composition>

@@ -1,0 +1,82 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:define name="head-end">
+        <ui:param name="renderBreadCrumb" value="false"/>
+    </ui:define>
+
+    <ui:define name="title">
+        Cadastrar Serviço
+    </ui:define>
+
+    <ui:define name="description">
+        Gerencie os Serviços do Sistema...
+    </ui:define>
+
+    <ui:define name="body">
+
+        <f:metadata>
+        </f:metadata>
+        <div class="box box-primary">
+
+            <div class="box-header with-border">
+                <h:form id="formulario" prependId="false" rendered="#{((loginMB.ativarservico) and (loginMB.ativo==(true)))}">
+                    <h:inputHidden id="id" value="#{servicoMB.servicotransfer.id}"/>                                            
+                    <p:focus/>
+                    <div class="ui-g-12">
+                        <div class="ui-g-12">
+                            <p:outputLabel for="nomeservico" value="Nome Serviço*"/> 
+                            <p:inputText id="nomeservico" value="#{servicoMB.servicotransfer.nomeservico}" validator="#{servicoMB.validarNomeServico}" styleClass="form-control"/>                                            
+                            <p:message for="nomeservico"/>
+                        </div>
+                    </div>
+                    <div class="ui-g-12">
+                        <div class="ui-g-12">
+                            <p:outputLabel for="descricaoservico" value="Descrição Serviço*"/> 
+                            <p:inputTextarea id="descricaoservico" value="#{servicoMB.servicotransfer.descricaoservico}" validator="#{servicoMB.validarDescricaoServico}" styleClass="form-control"/>                                            
+                            <p:message for="descricaoservico"/>
+                        </div>
+                    </div>
+                    <div class="ui-g-12">
+                        <div class="ui-g-12">
+                            <p:outputLabel for="status" value="Status*"/>
+                            <p:selectOneMenu id="status" value="#{servicoMB.servicotransfer.statusservico}">
+                                <f:selectItem itemLabel="Inativo" itemValue="I"/>
+                                <f:selectItem itemLabel="Ativo" itemValue="A"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="ui-g-12">
+
+                        <p:spacer height="20"/>
+                        <p:separator/>
+
+                        <p:commandButton  action="#{servicoMB.inserirServico()}" 
+                                          value="Salvar"
+                                          ajax="false"
+                                          icon="fa fa-check"
+                                          styleClass="btn-primary pull-right"/>
+                        <p:spacer width="10" />
+                        <p:commandButton value="Cancelar" 
+                                         action="#{servicoMB.limpar()}"
+                                         update=":formulario"
+                                         icon="fa fa-trash"
+                                         type="reset"
+                                         styleClass="btn-danger pull-right">
+                        </p:commandButton>
+                        <p:spacer width="10"/>
+                        <p:commandButton value="Voltar" immediate="true"
+                                         action="consultarservico?faces-redirect=true"
+                                         icon="fa fa-close"                                         
+                                         styleClass="pull-right"
+                                         />
+                    </div>
+                </h:form>
+            </div>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

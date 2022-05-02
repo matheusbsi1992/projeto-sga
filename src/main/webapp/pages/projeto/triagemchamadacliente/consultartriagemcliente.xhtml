@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:o="http://omnifaces.org/ui">
+
+    <h:head>
+        <h:outputScript library="js" name="dataprime.js"/>
+        <h:outputStylesheet library="css" name="showcase.css"/>
+        <h:outputStylesheet library="css" name="prism.css"/>
+        <h:outputStylesheet library="css" name="styleatendimentocliente.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"/>
+        <h:outputStylesheet library="webjars" name="font-awesome/4.7.0/css/font-awesome-jsf.css" />
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/favicon.ico']}"/>
+        <title>SGA</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <style type="text/css">
+        .ui-datatable table thead tr {
+            display: none;
+        }
+        .ui-datatable tbody.ui-datatable-data {
+            outline: 0;
+            font-size: 150%;
+        }
+        body .ui-datatable .ui-datatable-header, body .ui-treetable .ui-datatable-header, body .ui-datatable .ui-treetable-header, body .ui-treetable .ui-treetable-header, body .ui-datatable .ui-datatable-footer, body .ui-treetable .ui-datatable-footer, body .ui-datatable .ui-treetable-footer, body .ui-treetable .ui-treetable-footer {
+            background: #fff;
+            font-size: 200%;
+            font-weight: 500;
+            border-color: #f4f4f4;
+        }
+        .ui-button, .ui-button span, button.ui-button.ui-state-default span, .ui-button.ui-state-default span {
+            font-weight: 500;
+            font-size: 140%;
+        }
+        .ui-confirm-dialog-message {
+            display: inline-block;
+            margin-top: 1px;
+            font-size: 120%;
+        }
+        body .ui-dialog.ui-widget-content.box-info.box-solid .ui-dialog-title, body .ui-dialog.box-info.box-solid .ui-dialog-title {
+            color: #fff;
+            font-size: 100%;
+        }
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+    </style>
+
+
+    <script type="text/javascript">
+
+        function fullscreen() {
+            var elem = document.body;
+            if (elem.requestFullScreen) {
+                elem.requestFullScreen();
+            }
+            if (elem.webkitRequestFullScreen) {
+                elem.webkitRequestFullScreen();
+            }
+            if (elem.mozRequestFullScreen) {
+                elem.mozRequestFullScreen();
+            }
+            if (elem.msRequestFullScreen) {
+                elem.msRequestFullScreen();
+            }
+        }
+
+        function show(id) {
+            document.getElementById(id).style.visibility = "visible";
+        }
+        function hide(id) {
+            document.getElementById(id).style.visibility = "hidden";
+        }
+
+    </script>
+
+
+
+    <h:body >
+
+
+        <h:form id="consultar" prependId="false" rendered="#{((loginMB.ativartriagemchamadacliente) and (loginMB.ativo==(true)))}">
+
+            <div type="button" 
+                   value="clique para alternar"
+                   onclick="fullscreen()" 
+                   id="botaofullscreen"
+                   onmouseover="show('idfullscreen')"
+                   onmouseout="hide('idfullscreen')"
+                   >
+                <a href="javascript:void(0)" 
+                   id="idfullscreen"
+                   onclick="fullscreen()"
+                   >Fullscreen
+                    <span class="glyphicon glyphicon-fullscreen"></span>
+                </a>
+            </div>
+
+
+
+            <p:growl id="infomsg" life="3000"/>
+
+            <p:dataTable var="item" value="#{triagemChamadaClienteMB.listartransferchamadacliente}"
+                         emptyMessage="Nenhum Registro Encontrado."
+                         styleClass="responsive-table striped display" 
+                         id="overviewTableUserTriagemAlternativaChamadaCliente"			 	                                 
+                         paginatorPosition="bottom"	                                 
+                         >
+
+                <f:facet name="header">
+                    SERVIÇOS - GERADOS
+                </f:facet>
+
+                <p:column styleClass="align-center" colspan="1">
+                    <h:outputText value="#{item.servicotransfer.nomeservico}" style="font-size: 100%" />
+                    (<h:outputText value="#{item.siglatriagemalternativa}" style="font-size: 100%"/>)
+                </p:column>
+
+                <p:column styleClass="align-center" colspan="1">
+
+                    <p:commandButton 
+                        value="#{triagemChamadaClienteMB.triagemchamadaclientetransfer.normalchamadatriagemchamadacliente}"
+                        action="#{triagemChamadaClienteMB.inserirConvencionalTriagemChamadaCliente()}"
+                        styleClass="btn-primary"
+                        onclick="this.form.target = '_blank'"
+                        ajax="false"
+                        update=":consultar:infomsg"
+                        title="Distribuir senha normal"
+                        >    
+                        <f:setPropertyActionListener value="#{item}" target="#{triagemChamadaClienteMB.triagemchamadaclientetransfer}"/>
+                    </p:commandButton>
+
+                    <p:spacer width="10" height="10"/>
+                    <p:commandButton                                      action="#{triagemChamadaClienteMB.inserirPrioridadeTriagemChamadaCliente()}"
+                                                                          onclick="this.form.target = '_blank'"
+                                                                          process="@this"
+                                                                          ajax="false"
+                                                                          styleClass="btn btn-danger"
+                                                                          value="#{triagemChamadaClienteMB.triagemchamadaclientetransfer.prioridadechamadatriagemchamadacliente}"
+                                                                          title="Distribuir senha de prioridade"
+                                                                          update=":consultar:infomsg"
+                                                                          >
+                        <f:setPropertyActionListener value="#{item}" target="#{triagemChamadaClienteMB.triagemchamadaclientetransfer}"/>
+                    </p:commandButton>
+
+                </p:column>
+            </p:dataTable>
+
+            <script type="text/javascript">
+                function handleMessage(facesmessage) {
+                    facesmessage.severity = 'info';
+                    // alert('entrou aqui!!');
+                    //PF('wmsj').show([facesmessage]);
+                }
+            </script>
+
+            <o:socket channel="triagemalternativapushmb" onmessage="handleMessage" >
+                <p:ajax event="triagemalternativapushmb" update=":consultar:overviewTableUserTriagemAlternativaChamadaCliente" />
+            </o:socket>
+        </h:form>
+    </h:body>
+</html>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="senha" pageWidth="160" pageHeight="160" columnWidth="150" leftMargin="5" rightMargin="5" topMargin="5" bottomMargin="5" uuid="a68dd7d4-0fe3-4a5f-8947-bc17ca8fd873">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="sgaadapter"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="nometriagemchamadacliente" class="java.lang.String">
+		<parameterDescription><![CDATA[senha informada pelo usuario no monitoramento]]></parameterDescription>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[SELECT 	projetosga.servicotrbk.nomeservico,
+		projetosga.triagemchamadaclientetrbk.nometriagemachamadacliente,
+		projetosga.triagemchamadaclientetrbk.datainiciotriagemachamadacliente,
+		projetosga.triagemchamadaclientetrbk.prioridadetriagemachamadacliente,
+		projetosga.triagemchamadaclientetrbk.normaltriagemachamadacliente,
+		projetosga.triagemchamadaclientetrbk.siglaunidade
+	FROM 	projetosga.triagemchamadaclientetrbk
+	INNER JOIN projetosga.servicotrbk ON 
+		projetosga.triagemchamadaclientetrbk.idservico = projetosga.servicotrbk.idservico 
+	WHERE  ((projetosga.triagemchamadaclientetrbk.nometriagemachamadacliente = $P{nometriagemchamadacliente})
+	AND (triagemchamadaclientetrbk.statustriagemchamadacliente ='A'))
+	ORDER BY projetosga.triagemchamadaclientetrbk.datainiciotriagemachamadacliente 
+	DESC LIMIT 1;]]>
+	</queryString>
+	<field name="siglaunidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="siglaunidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="triagemchamadacliente"/>
+	</field>
+	<field name="nomeservico" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomeservico"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="servico"/>
+	</field>
+	<field name="datainiciotriagemachamadacliente" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="datainiciotriagemachamadacliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="triagemchamadacliente"/>
+	</field>
+	<field name="nometriagemachamadacliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nometriagemachamadacliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="triagemchamadacliente"/>
+	</field>
+	<field name="prioridadetriagemachamadacliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="prioridadetriagemachamadacliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="triagemchamadacliente"/>
+	</field>
+	<field name="normaltriagemachamadacliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="normaltriagemachamadacliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="triagemchamadacliente"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="10" width="150" height="20" uuid="1ce3b9ba-af34-4800-b85f-9898b1bbac2d"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{siglaunidade}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="111" splitType="Stretch">
+			<textField>
+				<reportElement x="-5" y="43" width="160" height="30" uuid="725ffa62-02a1-4582-ab0d-a968afce8e6d">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8f4904bb-f5bd-441a-a22d-708cd087fb13"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nomeservico}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="FixRelativeToBottom" x="-5" y="9" width="160" height="20" uuid="bac0200d-2874-45b9-8bbc-81407ce7fb12">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1a776d15-57de-4f37-b4fa-f03c4d96a572"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nometriagemachamadacliente}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Auto" isBlankWhenNull="true">
+				<reportElement x="-5" y="26" width="160" height="30" isPrintWhenDetailOverflows="true" forecolor="#FF0033" uuid="0a10ed4c-2a72-42d7-b08c-777027343cc7">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3f97366a-1db9-4366-b202-5280d4ce7d65"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prioridadetriagemachamadacliente}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="-5" y="26" width="160" height="23" forecolor="#0000FF" uuid="6cea7b41-0c0b-4630-b066-0cad1cc75f4b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="643c82a0-66cc-47e3-a29d-976820756cc3"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{normaltriagemachamadacliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-5" y="81" width="160" height="30" uuid="911c36ce-92ee-4bb2-914c-8fd398617e79"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{datainiciotriagemachamadacliente}]]></textFieldExpression>
+				<patternExpression><![CDATA["dd/MM/yyyy HH:mm:ss"]]></patternExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

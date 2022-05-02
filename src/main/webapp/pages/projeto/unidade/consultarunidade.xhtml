@@ -1,0 +1,125 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:adm="http://github.com/adminfaces"
+                xmlns:o="http://omnifaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:define name="head-end">
+        <ui:param name="renderBreadCrumb" value="false"/>
+        <style type="text/css">
+            .ui-grid-row .ui-grid-col-2,
+            .ui-grid-row .ui-grid-col-10 {
+                padding: 0.5em 0;
+                margin-left: 10px;
+            }
+
+            .ui-orderlist .ui-orderlist-list {
+                height: auto;
+            }
+
+            .ui-orderlist .ui-grid-row .ui-grid-col-2,
+            .ui-orderlist .ui-grid-row .ui-grid-col-10 {
+                padding: 0;
+            }
+        </style>
+
+    </ui:define>
+
+    <ui:define name="title">
+        Unidade
+    </ui:define>
+
+    <ui:define name="description">
+        Gerencie a Unidade do Sistema...
+    </ui:define>
+
+    <ui:define name="body">
+
+        <div class="box box-primary right">
+            <div class="box-header with-border right">
+                <h:form rendered="#{((loginMB.ativarunidade) and (loginMB.ativo==(true)))}">
+                    <p:commandButton action="inserirunidade?faces-blackirect=true"
+                                     ajax="false" 
+                                     icon="fa fa-plus"
+                                     value="Novo"
+                                     styleClass="btn-primary"
+                                     disabled="#{not empty unidadeListarMB.listarTransferunidade}"/>
+                    <p:separator/>
+                </h:form>
+
+                <h:form id="consultar" rendered="#{((loginMB.ativarunidade) and (loginMB.ativo==(true)))}">
+                    <p:panel class="ui-g-12">
+                        <legend>Pesquisar</legend>
+                        <div class="ui-g-12">
+                            <div class="ui-g-12 ui-md-4">
+                                <div class="ui-inputgroup">
+                                    <p:inputText placeholder="Nome" value="#{unidadeListarMB.nomeunidade}"/>
+                                    <p:commandButton update=":mensagem :consultar:overviewTableUser" ajax="false" actionListener="#{unidadeListarMB.consultarAction()}" icon="fa fa-search" styleClass="btn-info"/>
+                                </div>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                    <p:spacer height="20px"/>
+
+                    <p:dataTable var="item" value="#{unidadeListarMB.listarTransferunidade}"
+                                 emptyMessage="Nenhum Registro Encontrado."
+                                 styleClass="responsive-table striped display" 
+                                 id="overviewTableUserUnidade"
+                                 >
+
+                        <p:column headerText="Sigla"  width="150" styleClass="align-center">
+                            <h:outputText value="#{item.siglaunidade}" />
+                        </p:column>
+
+                        <p:column headerText="Unidade"  width="150" styleClass="align-center">
+                            <h:outputText value="#{item.nomeunidade}" />
+                        </p:column>
+
+
+
+                        <p:column headerText="Opções" styleClass="align-center" width="150">
+
+                            <p:commandButton id="ideditarservico" 
+                                             action="#{unidadeMB.editarUnidade()}" 
+                                             delay="1000"
+                                             icon="fa fa-pencil"
+                                             title="Editar"
+                                             >
+                                <p:confirm header="Edição" message="Deseja Editar Está Unidade: #{item.nomeunidade} ?" icon="ui-icon-alert"/>
+                                <f:setPropertyActionListener value="#{item}" target="#{unidadeMB.unidadetransfer}"/>
+                            </p:commandButton>
+
+                            <p:confirmDialog responsive="true"  global="true" showEffect="fade" hideEffect="fade" styleClass="box-solid box-info">
+                                <p:commandButton value="Não" type="button" styleClass="btn btn-danger ui-confirmdialog-no"
+                                                 icon="fa fa-close"
+                                                 />
+                                <p:commandButton value="Sim" type="button" styleClass="btn btn-primary ui-confirmdialog-yes"
+                                                 icon="fa fa-check"
+                                                 />                                
+                            </p:confirmDialog>
+
+                        </p:column>
+                    </p:dataTable>
+
+                    <script type="text/javascript">
+                        function handleMessage(facesmessage) {
+                            facesmessage.severity = 'info';
+                            // alert('entrou aqui!!');
+                            //PF('wmsj').show([facesmessage]);
+                        }
+                    </script>
+
+                    <o:socket channel="unidadepushmb" onmessage="handleMessage" >
+                        <p:ajax event="unidadepushmb" 
+                                update=":consultar:overviewTableUserUnidade"
+                                listener="#{unidadeListarMB.listarTodosUnidade()}"/>
+                    </o:socket>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

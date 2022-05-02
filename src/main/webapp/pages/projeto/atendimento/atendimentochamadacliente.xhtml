@@ -1,0 +1,290 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <h:head>
+        <h:outputScript library="js" name="flipclock.min.js"/>
+        <h:outputScript library="js" name="responsivevoice.js"/>
+        <h:outputStylesheet library="css" name="flipclock.css"/>
+        <h:outputStylesheet library="css" name="styleatendimentocliente.css"/>
+        <h:outputStylesheet library="webjars" name="font-awesome/4.7.0/css/font-awesome-jsf.css" />
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/favicon.ico']}"/>
+        <title>SGA</title>
+    </h:head>
+
+    <h:body>
+
+        <style type="text/css">
+            body .ui-datagrid .ui-datagrid-header, body .ui-datagrid .ui-datagrid-footer {
+                font-size: 18px;
+                font-weight: 500;
+                display: none;
+            }
+            .ui-grid {
+                clear: both;
+                padding: 0;
+                margin: 0;
+                border-radius: 10px;
+                padding-bottom: 30px;
+            }
+
+
+        </style>
+
+        <script>
+            function updateAtendi(message) {
+                $("#numerodolocal").text(message.numerodolocal);
+                $("#nomelocal").text(message.nomelocal);
+                $("#prioridadetriagemachamadacliente").text(message.prioridadetriagemachamadacliente);
+                $("#nometriagemachamadacliente").text(message.nometriagemachamadacliente);
+                $("#nomeservico").text(message.nomeservico);
+                handleEncerrarMessage();
+            }
+        </script>
+
+        <script>
+            function updateCounter(message) {
+                $("#numerodolocal").text(message.numerodolocal);
+                $("#nomelocal").text(message.nomelocal);
+                $("#prioridadetriagemachamadacliente").text(message.prioridadetriagemachamadacliente);
+                $("#nometriagemachamadacliente").text(message.nometriagemachamadacliente);
+                $("#nomeservico").text(message.nomeservico);
+                handleMessage();
+                handleMessageVoice(message);
+            }
+        </script>
+        <script type="text/javascript">
+            function handleMessage() {
+                $("#nometriagemachamadacliente").effect("shake", {
+                    complete: function () {
+                        $("#nometriagemachamadacliente").effect("pulsate", {
+                            times: 3
+                        }, 1000);
+                    }
+                }, 500);
+                document.getElementById('novoaudio').play();
+            }
+        </script>   
+
+        <script type="text/javascript">
+            function handleEncerrarMessage() {
+                $("#nometriagemachamadacliente").effect("shake", {
+                    complete: function () {
+                        $("#nometriagemachamadacliente").effect("pulsate", {
+                            times: 3
+                        }, 1000);
+                    }
+                }, 500);
+                document.getElementById('novoaudioencerrar').play();
+                var voice = 'Brazilian Portuguese Female';
+
+                setTimeout(responsiveVoice.speak('Atendimento Encerrado', voice, {rate: 0.9}), 3000);
+            }
+        </script>   
+
+        <script type="text/javascript">
+            function handleMessageVoice(message) {
+
+                var local = (message.nomelocal);
+
+                var numerolocal = (message.numerodolocal);
+
+                var senha = 'Senha ' + (message.nometriagemachamadacliente);
+
+                var voice = 'Brazilian Portuguese Female';
+
+                var completartexto = local + " " + numerolocal + " " + senha;
+
+                setTimeout(responsiveVoice.speak(completartexto, voice, {rate: 0.9}), 5000);
+            }
+
+        </script>
+
+
+        <script type="text/javascript">
+            function handleMessageVideo(facesmessage) {
+                facesmessage.severity = 'info';
+            }
+        </script>
+
+        <script type="text/javascript">
+
+            function fullscreen() {
+                var elem = document.body;
+                if (elem.requestFullScreen) {
+                    elem.requestFullScreen();
+                }
+                if (elem.webkitRequestFullScreen) {
+                    elem.webkitRequestFullScreen();
+                }
+                if (elem.mozRequestFullScreen) {
+                    elem.mozRequestFullScreen();
+                }
+                if (elem.msRequestFullScreen) {
+                    elem.msRequestFullScreen();
+                }
+            }
+
+            function show(id) {
+                document.getElementById(id).style.visibility = "visible";
+            }
+            function hide(id) {
+                document.getElementById(id).style.visibility = "hidden";
+            }
+
+        </script>
+
+        <h:form id="atendimentochamada" rendered="#{((loginMB.ativarpainelatendimento) and (loginMB.ativo==(true)))}">
+
+            <div id="botaofullscreen"
+                 onmouseover="show('idfullscreen')"
+                 onmouseout="hide('idfullscreen')">
+                <a href="javascript:void(0)" 
+                   id="idfullscreen"
+                   onclick="fullscreen()"
+                   >Fullscreen
+                    <span class="glyphicon glyphicon-fullscreen"></span>
+                </a>
+            </div>
+
+
+            <audio id="novoaudio" src="../../../resources/sounds/classic-whistle-old-spice-v2.mp3"/>
+            <audio id="novoaudioencerrar" src="../../../resources/sounds/tap-sms.mp3"/>
+
+            <o:socket channel="counterAdvWeb" onmessage="updateCounter">
+                <p:ajax event="message" update=":atendimentochamada:overviewTableAtendimento" />
+            </o:socket>
+
+            <o:socket channel="counterAtendiWeb" onmessage="updateAtendi">
+                <p:ajax event="message" update=":atendimentochamada:overviewTableAtendimento" />
+            </o:socket>
+
+            <o:socket channel="atendimentovideopushmb"
+                      onmessage="handleMessageVideo"
+                      >
+                <p:ajax event="atendimentovideopushmb"
+                        update="@form"
+                        listener="#{triagemAtendimentoClienteVideoMB.retornarLink}"/>
+            </o:socket>
+
+
+            <div id="layout-content">
+
+                <iframe  jsf:id="slides-container"  id="slides-container"  src="#{triagemAtendimentoClienteVideoMB.link}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="true"></iframe>
+
+                <div id="barra-lateral">
+                    <div id="senha-container"> 
+                        <div id="mensagem">
+                            <span id="prioridadetriagemachamadacliente" class="normal">
+                                <h:outputText 
+                                    value="#{triagemAtendimentoClienteMB.triagematendimentochamadaclientetransfer.prioridadetriagemachamadacliente}"
+                                    />
+                            </span>
+                        </div>
+                        <div class="row">
+                            <div>
+                                <div id="local" class="prioridade">
+                                    <span id="nometriagemachamadacliente">
+                                        <h:outputText value="#{triagemAtendimentoClienteMB.triagematendimentochamadaclientetransfer.nometriagemachamadacliente}"/>
+                                    </span>
+                                </div>
+                                <div id="mensagem" class="prioridade">
+                                    <span id="nomeservico">
+                                        <h:outputText value="#{triagemAtendimentoClienteMB.triagematendimentochamadaclientetransfer.servicotransfer.nomeservico}"/>
+                                    </span>
+                                </div>
+                            </div>
+                            <p:separator/>
+                            <div>
+                                <div id="local" class="local">
+                                    <span id="nomelocal">
+                                        <h:outputText value="#{triagemAtendimentoClienteMB.triagematendimentochamadaclientetransfer.localtransfer.nomelocal}"/>
+                                    </span>
+                                </div>
+                                <div id="local-numero" class="numero-local">
+                                    <span id="numerodolocal">
+                                        <h:outputText value="#{triagemAtendimentoClienteMB.triagematendimentochamadaclientetransfer.numerodolocal}"
+                                                      />
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="relogio-container">
+                        <div class="clock" style="margin: 0;"></div>
+                        <script type="text/javascript">
+                            var clock = $('.clock').FlipClock({
+                                clockFace: 'TwentyFourHourClock',
+                                showSeconds: true
+                            }
+                            );
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <div id="historico">
+                <div class="senhas">
+                    <div class="ui-g-12 ui-md-12 senha-chamada">
+
+                        <p:dataGrid var="item" 
+                                    value="#{triagemListarAtendimentoChamadaCliente.listartodostriagematendimentotransferchamadacliente}" 
+                                    columns="6"
+                                    layout="grid"
+                                    emptyMessage="Nenhum Registro Encontrado."
+                                    styleClass="responsive-table striped display" 
+                                    id="overviewTableAtendimento"                                
+                                    paginatorPosition="bottom"	                                 
+                                    currentPageReportTemplate="[ Exibindo de {startRecord} a {endRecord} no total de {totalRecords} - Página: {currentPage}/{totalPages} ]"
+                                    >
+                            <f:facet name="header">
+                                Senhas (Anteriores):
+                            </f:facet>
+
+                            <h:panelGrid  columns="1"
+                                          style="width:100%">
+                                <div class="senha">
+                                    <span  style="color:#{item.cormonitorsenha}; font-size: 50px;">#{item.nometriagemachamadacliente}</span>
+                                </div>
+                                <div class="local">
+                                    <span style="font-size: 30px;">#{item.localtransfer.nomelocal}: #{item.numerodolocal}</span>
+                                </div>
+                            </h:panelGrid>
+                        </p:dataGrid>
+
+                        <script type="text/javascript">
+                            function handleMessageGrid(facesmessage) {
+                                facesmessage.severity = 'info';
+                            }
+                        </script>
+
+                        <o:socket channel="atualizarlistagrid"
+                                  onmessage="handleMessageGrid">
+                            <p:ajax event="listargrid"
+                                    update=":atendimentochamada:overviewTableAtendimento"/>
+                        </o:socket>
+
+                        <o:socket channel="triagemchamadaclienteauxpushmbmb"
+                                  onmessage="handleMessageGrid">
+                            <p:ajax event="triagemchamadaclienteauxpushmbmb"
+                                    update=":atendimentochamada:overviewTableAtendimento"
+                                    listener="#{triagemListarAtendimentoChamadaCliente.listarTriagemAtendimentoTransferChamadaCliente}"/>
+                        </o:socket>
+
+                    </div>
+                </div>
+            </div>
+
+        </h:form>
+    </h:body>
+</html>

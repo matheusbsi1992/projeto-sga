@@ -1,0 +1,706 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" 
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:adm="http://github.com/adminfaces"
+                xmlns:o="http://omnifaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:define name="head-end">
+        <ui:param name="renderBreadCrumb" value="false"/>
+        <style type="text/css">
+
+
+            .ui-grid-row .ui-grid-col-2,
+            .ui-grid-row .ui-grid-col-10 {
+                padding: 0.5em 0;
+                margin-left: 10px;
+            }
+            .ui-orderlist .ui-orderlist-list {
+                height: auto;
+            }
+            .ui-orderlist .ui-grid-row .ui-grid-col-2,
+            .ui-orderlist .ui-grid-row .ui-grid-col-10 {
+                padding: 0;
+            }     
+
+            .middlePanelClass   .ui-widget-content{
+                font-size: 12px;
+                background-color: yellow;
+                font-family: 'Lucida Sans Unicode',Verdana,Arial,Helvetica,sans-serif;
+            }
+            .largefont{
+                font-size: large;
+            }
+            .boldfont{
+                font-size: large;
+                font-weight: bold;
+            }
+
+
+            body .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-title,
+            body .ui-dialog .ui-dialog-titlebar .ui-dialog-title{
+                float: left;
+                font-size: larger;
+                font-weight: 500;
+                color: #444;
+                margin: .3em 16px .3em 0;
+            }
+            .ui-widget-header .ui-inputfield, .ui-widget-content .ui-inputfield {
+                font-weight: normal;
+                width: 100%;
+            }
+            body  .painelservicolocal{
+                background-color: lightblue;
+            }
+
+            body .ui-panel.ui-widget{
+                border-radius: 10px;
+            }
+
+            .ui-timer {
+                padding: 4px 10px;
+                font-size: xx-large;
+                border-radius: 10px;
+                border-block-color: cadetblue;
+                border-block-width: thick;
+                padding-left: 150px;
+                padding-right: 150px;
+            }
+
+            .ui-widget-header {
+                color: #000;
+                border: 1px solid #e2e2e2;
+                background: #fff;
+                font-weight: 600;
+            }
+
+        </style>
+
+        <script type="text/javascript">
+
+            // função para desabilitar a ação da tecla F5.
+            window.onkeydown = function (e) {
+                if (e.keyCode === 116) {
+                    e.keyCode = 0;
+                    e.returnValue = false;
+                    return false;
+                }
+
+            };
+
+
+        </script>
+
+        <script type="text/javascript">
+
+            //funcao para visualizar o botao de chamada e ocultar o botao de nao compareceu para atendimento
+            function showmostrarbotaodechamada() {
+                //--ativa a div para visualizar o botao de de nao compareceu para o atendimento
+                document.getElementById('chamadaatendimentopaciente').style.display = "block";
+                hiddenbotaodenaoatendimento();
+            }
+            ;
+            function hiddenbotaodenaoatendimento() {
+                //--desativa a div para nao deixar visualizar o botao de de nao compareceu para o atendimento
+                document.getElementById('naocompareceuparaatendimento').style.display = "none";
+            }
+            ;
+
+            function hiddenbotoesatendimento() {
+
+                //--desativa a div para nao deixar visualizar o botao de de nao compareceu para o atendimento
+                document.getElementById('naocompareceuparaatendimento').style.display = "none";
+                //--desativa a div para nao deixar visualizar o botao de chamar o paciente
+                document.getElementById('chamadaatendimentopaciente').style.display = "none";
+                //--ativa a div para deixar visualizar o botao de chamar o paciente
+                //document.getElementById('chamarproximoatendimento').style.display = "block";
+
+            }
+            ;
+            //funcao para visualizar o botao de atendimento pelo dialogo de viasualizacao
+            function showmostrarbotaoatendimento() {
+                //--ativa a div para visualizar o botao de de nao compareceu para o atendimento
+                document.getElementById('visualizarbotaoatendimento').style.display = "block";
+                //--ativa a div para visualizar o cronometro de tempo
+                document.getElementById('cronometrotempo').style.display = "block";
+                //--desativa botao de chamar proximo
+                document.getElementById('chamarproximoatendimento').style.display = "none";
+                //--desativa a div para nao deixar visualizar o botao de de nao compareceu para o atendimento
+                document.getElementById('naocompareceuparaatendimento').style.display = "none";
+                //--desativa a div para nao deixar visualizar o botao de chamar o paciente
+                document.getElementById('chamadaatendimentopaciente').style.display = "none";
+            }
+            ;
+
+
+            //funcao para visualizar o botao de nao compareceu para atendimento
+            function showmostratbotadodenaocompareceuparatendimento() {
+                //--desativa a div para nao deixar visualizar o botao de de nao compareceu para o atendimento
+                document.getElementById('naocompareceuparaatendimento').style.display = "block";
+            }
+            ;
+
+            //funcao com a alta responsabilidade de visualizar todos os botoes e desativar o de nao compareceu
+            function showmostrarchamada() {
+                //--desativa a div para nao deixar visualizar o botao de de nao compareceu para o atendimento
+                document.getElementById('naocompareceuparaatendimento').style.display = "none";
+                //--desativa a div para nao deixar visualizar o botao de atendimento
+                document.getElementById('chamarproximoatendimento').style.display = "block";
+                //--ativa a div para visualizar o botao de chamar o paciente
+                document.getElementById('chamadaatendimentopaciente').style.display = "block";
+            }
+            ;
+
+
+
+        </script>
+
+    </ui:define>
+
+    <ui:define name="title">
+        Atendimento
+    </ui:define>
+
+    <ui:define name="description">
+        Efetue o Atendimento às Senhas Distribuídas dos Serviços que Você Atende
+    </ui:define>
+
+    <ui:define name="body">
+
+        <div class="box box-primary right">
+            <div class="box-header with-border right">
+
+
+                <h:form rendered="#{((loginMB.ativaratendimento) and (loginMB.ativo==(true)))}">
+
+                    <p:commandButton
+                        disabled="false"
+                        onclick="PF('visualizarservicousuario').show();"
+                        update=":visualizarsenhasservicos:overviewTableUserTriagemSenhas"
+                        process="@this"
+                        value="Meus Serviços"
+                        icon ="fa fa-list-alt"
+                        styleClass="btn-primary"
+                        immediate="true"
+                        action="#{servicoMB.consultarServicoUsuario()}">
+                        <f:param name="nomeusuario" value="#{loginMB.usuariotransfer.nomeusuario}"/>                     
+                    </p:commandButton>
+
+                </h:form>
+
+                <p:dialog 
+                    widgetVar="visualizarservicousuario"
+                    appendTo="@(body)"
+                    modal="true" 
+                    minimizable="true"
+                    id="dialogo"
+                    maximizable="true"
+                    resizable="true"
+                    styleClass="box-primary"
+                    showEffect="explode" 
+                    hideEffect="bounce"
+                    style="text-align: center;"
+                    rendered="#{((loginMB.ativaratendimento) and (loginMB.ativo==(true)))}">
+
+                    <h:form id="visualizarsenhasservicos" rendered="#{((loginMB.ativaratendimento) and (loginMB.ativo==(true)))}">
+                        <div class="col-xs-12">
+
+                            <p:dataTable var="item" 
+                                         value="#{servicoMB.servicobuscarusuario}"
+                                         emptyMessage="Nenhum Registro Encontrado."
+                                         styleClass="responsive-table striped display" 
+                                         id="overviewTableUserTriagemSenhas"			 	                                 
+                                         paginatorPosition="bottom"	
+                                         >
+                                <f:facet name="header">
+                                    SERVIÇOS ATENDIDOS
+                                </f:facet>
+                                <p:column styleClass="align-center">
+                                    <h:outputText value="#{item.nomeservico}" style="font-size: 100%" />
+                                </p:column>
+                                <p:column styleClass="align-center">
+                                    <h:outputText value="#{item.descricaoservico}" style="font-size: 100%"/>
+                                </p:column>
+                            </p:dataTable>
+
+                        </div>
+
+                        <script type="text/javascript">
+                            function handleMessageServicoAtendido(facesmessage) {
+                                facesmessage.severity = 'info';
+                            }
+                        </script>
+
+                        <o:socket channel="servicopushmbatendimento" 
+                                  onmessage="handleMessageServicoAtendido" >
+                            <p:ajax event="servicopushmbatendimento"
+                                    update=":visualizarsenhasservicos:overviewTableUserTriagemSenhas"
+                                    listener="#{servicoListarMB.listarTodosServico()}"/>
+                        </o:socket>
+                    </h:form>
+                </p:dialog>
+
+                <p:separator />
+
+
+                <h:form id="consultaratendimento" rendered="#{((loginMB.ativaratendimento) and (loginMB.ativo==(true)))}">
+
+                    <script type="text/javascript">
+                        function handleMessageUsuario(facesmessage) {
+                            facesmessage.severity = 'info';
+                        }
+                    </script>
+
+                    <o:socket channel="usuarioinativopushmb"  
+                              onmessage="handleMessageUsuario"
+                              scope="session">
+                        <p:ajax event="usuarioinativopushmb" 
+                                update=":consultaratendimento" 
+                                />
+                    </o:socket>
+
+                    <script type="text/javascript">
+                        function handleMessageServicoRefresh(facesmessage) {
+                            facesmessage.severity = 'info';
+                        }
+                    </script>
+
+                    <o:socket channel="servicopushmb" 
+                              onmessage="handleMessageServicoRefresh"
+                              >
+                        <p:ajax event="servicopushmb"
+                                update=":consultaratendimento"
+                                listener="#{triagemAtendimentoClienteMB.carregarServico}"
+                                />
+                    </o:socket>
+
+                    <script type="text/javascript">
+                        function handleMessageServicoDesabilitarServico(facesmessage) {
+                            facesmessage.severity = 'info';
+                        }
+                    </script>
+
+                    <o:socket channel="servicopushmbatendimentoatualizar" 
+                              onmessage="handleMessageServicoDesabilitarServico"
+                              scope="session"
+                              >
+                        <p:ajax event="servicopushmbatendimentoatualizar"
+                                update=":consultaratendimento"
+                                listener="#{triagemAtendimentoClienteMB.carregarServico}"
+                                />
+                    </o:socket>
+
+
+                    <script type="text/javascript">
+                        function handleMessageReiniciarSenhas(facesmessage) {
+                            facesmessage.severity = 'info';
+                            //PF('wmsj').show([facesmessage]);
+                        }
+                    </script>
+
+
+                    <o:socket channel="usuarioservicosenhaspushmb" 
+                              onmessage="handleMessageReiniciarSenhas"
+                              >
+                        <p:ajax event="usuarioservicosenhaspushmb"
+                                update="consultaratendimento:overviewTableAtendimento"
+                                listener="#{triagemAtendimentoClienteMB.listarTudodaGridSenhasporServico}"
+                                />
+                    </o:socket>
+
+                    <script type="text/javascript">
+                        function handleMessagePrincipal(facesmessage) {
+                            facesmessage.severity = 'info';
+                            //PF('wmsj').show([facesmessage]);
+                        }
+                    </script>
+
+                    <o:socket channel="triagemchamadaclientepushmbmb" 
+                              onmessage="handleMessagePrincipal"
+                              >
+                        <p:ajax event="triagemchamadaclientepushmbmb"
+                                update="consultaratendimento:overviewTableAtendimento"
+                                listener="#{triagemAtendimentoClienteMB.listarTudodaGridSenhasporServico}"
+
+                                />
+                    </o:socket>
+
+                    <o:socket channel="triagemchamadaclienteauxpushmbmb" 
+                              onmessage="handleMessagePrincipal"
+                              >
+                        <p:ajax event="triagemchamadaclienteauxpushmbmb"
+                                update="consultaratendimento:overviewTableAtendimento"
+                                listener="#{triagemAtendimentoClienteMB.listarTudodaGridSenhasporServico}"
+                                />
+                    </o:socket>
+
+                    <o:socket channel="atualizarlistagridatendimento" 
+                              onmessage="handleMessagePrincipal"
+                              >
+                        <p:ajax event="atualizarlistagridatendimento"
+                                update="consultaratendimento:overviewTableAtendimento"
+                                listener="#{triagemAtendimentoClienteMB.listarTudodaGridSenhasporServico}"
+                                />
+                    </o:socket>
+
+                    <o:socket channel="monitorchamadaclienteatendimento" 
+                              onmessage="handleMessagePrincipal"
+                              >
+                        <p:ajax event="monitorchamadaclienteatendimento"
+                                update="consultaratendimento:overviewTableAtendimento"
+                                listener="#{triagemAtendimentoClienteMB.listarTudodaGridSenhasporServico}"
+                                />
+                    </o:socket>
+
+                    <o:socket channel="triagemchamadaclienteprioriconvpushmbmb" 
+                              onmessage="handleMessagePrincipal"
+
+                              >
+                        <p:ajax event="triagemchamadaclienteprioriconvpushmbmb"
+                                update="consultaratendimento:overviewTableAtendimento"
+                                listener="#{triagemAtendimentoClienteMB.listarTudodaGridSenhasporServico}"
+                                />
+                    </o:socket>
+
+                    <script type="text/javascript">
+                        function handleMessagePrincipalMonitorAtendimento(facesmessage) {
+                            facesmessage.severity = 'info';
+                            //PF('wmsj').show([facesmessage]);
+                        }
+                    </script>
+
+                    <o:socket channel="monitorchamadaclientepushmbmb" 
+                              onmessage="handleMessagePrincipalMonitorAtendimento"
+                              >
+                        <p:ajax event="monitorchamadaclientepushmbmb"
+                                update="@(div[id$=painelatendimento])"
+                                listener="#{triagemAtendimentoClienteMB.atendimentoDesativado}"
+                                />
+                    </o:socket>
+
+                    <div class="ui-g ui-fluid">
+                        <div class="ui-g-12 ui-md-4">
+                            <p:panel style="size: 10px;"
+                                     class="painelservicolocal"
+                                     id="alterarpainel"
+                                     >
+                                <legend>
+                                    <h:outputText value="#{triagemAtendimentoClienteMB.triagematendimentochamadaclientetransfer.localtransfer.nomelocal}"
+                                                  rendered="#{triagemAtendimentoClienteMB.ativarpanelatendimentoservicoesenha}"/>
+                                </legend>
+
+                                <div class="ui-xs-12">
+                                    <h:outputText style="font-size: 30px; font-stretch: ultra-condensed;" value="#{triagemAtendimentoClienteMB.triagematendimentochamadaclientetransfer.numerodolocal}"
+                                                  rendered="#{triagemAtendimentoClienteMB.ativarpanelatendimentoservicoesenha}"
+                                                  id="numerolocal"/>                                    
+                                </div>
+
+                                <div class="ui-xs-12">
+                                    <p:commandLink value="Alterar" 
+                                                   oncomplete="PF('dialogolocaleservicossenhasclientes').show()"
+                                                   update="@(div[id$=servico])"
+                                                   title="Selecionar Serviço e Local"/>
+                                </div>
+                            </p:panel>
+
+                            <p:spacer width="30px" height="30px"/>
+
+                            <p:dialog header="Iniciar Atendimento"
+                                      widgetVar="dialogodecisao"
+                                      modal="true"
+                                      resizable="false"
+                                      draggable="false"
+                                      responsive="true"
+                                      styleClass="dialog-login"
+                                      >
+
+                                <p:panelGrid style="width: 500px; 
+                                             text-align: center;
+                                             height: 100%;
+                                             font-size: larger;"
+                                             id="gridatendimentousuario" 
+                                             columns="1"
+                                             layout="grid"
+                                             styleClass="no-border ui-fluid">
+                                    <h:outputText value="#{loginMB.usuariotransfer.sobrenomeusuario.toUpperCase()} ! Por favor, deseja iniciar o atendimento?" />
+                                </p:panelGrid>
+                                <p:separator/>
+                                <p:button styleClass="btn-material pull-left fa fa-times" 
+                                          value="Fechar" 
+                                          style="width: auto;"
+                                          onclick="PF('dialogodecisao').hide();
+                                                  return false"/>
+
+                                <p:commandButton styleClass="btn-primary pull-right"
+                                                 value="Iniciar Atendimento"
+                                                 process="@this"
+                                                 style="width: auto;"                                                 
+                                                 oncomplete="PF('dialogodecisao').hide();
+                                                 return false"
+                                                 update="consultaratendimento:cronometro"
+                                                 id="iniciaratendimento"
+                                                 onclick="showmostrarbotaoatendimento()"
+                                                 action="#{triagemAtendimentoClienteMB.chamadaAtualizarDeslocamento()}"
+                                                 >
+                                    <f:param name="nomeusuario" value="#{loginMB.usuariotransfer.nomeusuario}" />
+                                </p:commandButton>
+                            </p:dialog>   
+
+
+                            <div id="cronometrotempo"
+                                 style="display: none "
+                                 >
+
+                                <pe:timer id="cronometro" 
+                                          timeout="259200"
+                                          forward="true"
+                                          format="HH:mm:ss"
+                                          immediate="true"
+                                          autoStart="#{triagemAtendimentoClienteMB.ativarcronometro}"/>
+                            </div>
+
+                            <p:spacer width="30px" height="30px"/>
+
+                        </div>
+
+                        <div class="ui-g-12 ui-md-8">
+
+                            <p:panel class="ui-g-12" 
+                                     style="size: 10px;"
+                                     id="painelatendimento"
+                                     rendered="#{triagemAtendimentoClienteMB.ativarpanelatendimentoservicoesenha}">
+
+                                <legend>
+                                    ATENDIMENTO
+                                </legend>
+
+                                <div class="ui-xs-12">
+                                    <p:outputLabel value="Senha:" style="font-size: 20px; font-stretch: ultra-condensed;"/>
+                                    <h:outputText value="#{triagemAtendimentoClienteMB.triagematendimentochamadaclientetransfer.nometriagemachamadacliente}" 
+                                                  style="font-size: 25px; 
+                                                  font-stretch: ultra-condensed;
+                                                  color:#{triagemAtendimentoClienteMB.triagematendimentochamadaclientetransfer.cormonitorsenha}"
+                                                  id="nometriagemachamadacliente"
+                                                  />
+                                </div>
+                                <div class="ui-xs-12">
+                                    <p:outputLabel value="Serviço:" style="font-size: 20px; font-stretch: ultra-condensed;"/>
+                                    <h:outputText style="font-size: 25px; font-stretch: ultra-condensed;" value="#{triagemAtendimentoClienteMB.triagematendimentochamadaclientetransfer.servicotransfer.nomeservico}"/>                                    
+                                </div>
+                                <div class="ui-xs-12">
+                                    <p:outputLabel value="Prioridade:" style="font-size: 20px; font-stretch: ultra-condensed;"/>
+                                    <h:outputText style="font-size: 25px; font-stretch: ultra-condensed;" value="#{triagemAtendimentoClienteMB.triagematendimentochamadaclientetransfer.prioridadetriagemachamadacliente}"/>                                    
+                                </div>
+                                <div class="ui-xs-12">
+                                    <p:outputLabel value="Data Chegada:" style="font-size: 20px; font-stretch: ultra-condensed;"/>
+                                    <h:outputText style="font-size: 25px; font-stretch: ultra-condensed;" value="#{triagemAtendimentoClienteMB.triagematendimentochamadaclientetransfer.datainiciotriagemchamadacliente}"
+                                                  >                                    
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                                    </h:outputText>
+                                </div>
+                                <div class="ui-xs-12"
+                                     id="visualizarbotaoatendimento"
+                                     style="display:none;"
+                                     >
+                                    <p:commandButton value="Atendido" 
+                                                     id="atendido" 
+                                                     icon="fa fa-thumbs-up" 
+                                                     styleClass="btn-lg btn-teal btn-block"
+                                                     global="false"
+                                                     update="@form"
+                                                     onclick="hiddenbotoesatendimento()"
+                                                     actionListener="#{triagemAtendimentoClienteMB.chamadaAtendidoCliente()}"
+                                                     >
+                                        <f:param name="nomeusuario" value="#{loginMB.usuariotransfer.nomeusuario}" />
+                                    </p:commandButton>
+
+                                </div>
+                            </p:panel>
+                        </div>
+
+                        <p:spacer width="10px"/>
+
+                        <div class="ui-xs-12 ui-md-12" 
+
+                             >
+                            <div class="col-sm-8 col-md-4"
+                                 id="chamarproximoatendimento"
+                                 >
+                                <p:commandButton value="Próximo" 
+                                                 id="chamarproximo" 
+                                                 icon="fa fa-bullhorn" 
+                                                 styleClass="btn-lg btn-teal btn-block"
+                                                 process="@this"
+                                                 update="@form"
+                                                 rendered="#{triagemAtendimentoClienteMB.ativarbotaochamarproximo}"
+                                                 action="#{triagemAtendimentoClienteMB.chamarProximoCliente()}"
+                                                 onclick="showmostrarbotaodechamada()"
+                                                 />
+                            </div>
+
+                            <div class="col-sm-8 col-md-4"
+                                 style="display:none;"
+                                 id="naocompareceuparaatendimento">
+                                <p:commandButton value="Não compareceu" 
+                                                 id="naocompareceu" 
+                                                 icon="fa fa-window-close-o" 
+                                                 styleClass="btn-lg btn-teal btn-block"
+                                                 global="false"
+                                                 update="@form"
+                                                 onclick="hiddenbotoesatendimento()"
+                                                 action="#{triagemAtendimentoClienteMB.chamadaNaoAtendidoCliente()}"
+                                                 >
+                                    <f:param name="nomeusuario"  value="#{loginMB.usuariotransfer.nomeusuario}" />
+                                </p:commandButton>
+                            </div>
+
+                            <div class="col-sm-8 col-md-4"
+                                 id="chamadaatendimentopaciente"
+                                 >
+                                <p:commandButton value="Chamar paciente" 
+                                                 id="chamarnovamente" 
+                                                 oncomplete="PF('dialogodecisao').show();"
+                                                 icon="fa fa-refresh" 
+                                                 styleClass="btn-lg btn-teal btn-block"
+                                                 global="false"
+                                                 rendered="#{triagemAtendimentoClienteMB.ativarbotaochamarcliente}"
+                                                 onclick="showmostratbotadodenaocompareceuparatendimento()"
+                                                 actionListener="#{triagemAtendimentoClienteMB.chamarCliente()}">
+                                    <f:param name="nomeusuario" value="#{loginMB.usuariotransfer.nomeusuario}" />
+                                </p:commandButton>
+                            </div>
+                        </div>
+
+                        <p:spacer width="10px"/>
+
+                        <div class="ui-g-12 ui-md-12">
+
+                            <p:dataGrid var="item" 
+                                        value="#{triagemAtendimentoClienteMB.listartriagematendimentotransferchamadacliente}" 
+                                        columns="6"
+                                        layout="grid"
+                                        emptyMessage="Nenhum Registro Encontrado."
+                                        styleClass="responsive-table striped display" 
+                                        id="overviewTableAtendimento"                                
+                                        paginatorPosition="bottom"	                                 
+                                        >
+                                <f:facet name="header">
+                                    Minha fila (Todos):
+                                </f:facet>
+
+                                <h:panelGrid  columns="1"
+                                              style="width:100%">
+                                    <p:commandLink value="#{item.nometriagemachamadacliente}" 
+                                                   style="color:#{item.cormonitorsenha};
+                                                   width: 100%;
+                                                   font-size: 20px;"
+                                                   title="#{item.nometriagemachamadacliente}"
+                                                   action="#{triagemAtendimentoClienteMB.setValorTriagemAtendimento(item)}"
+                                                   update="@form"
+                                                   global="false"
+                                                   onclick="showmostrarchamada()"
+                                                   />
+                                </h:panelGrid>
+
+                            </p:dataGrid>
+
+
+                        </div>
+                    </div>
+                    <div class="ui-g-12">
+                        <p:dialog 
+                            header="LOCAL DE ATENDIMENTO"
+                            widgetVar="dialogolocaleservicossenhasclientes"
+                            modal="true" 
+                            resizable="false"
+                            draggable="false"
+                            responsive="true"
+                            styleClass="box-primary"
+                            id="transeferirsenha"
+                            >
+
+                            <p:outputLabel for="numeroatendimentocliente"
+                                           value="Número:" 
+                                           class="boldfont"/>
+
+                            <p:inputText id="numeroatendimentocliente"
+                                         value="#{triagemAtendimentoClienteMB.triagematendimentochamadaclientetransfer.numerodolocal}" 
+                                         class="largefont"
+                                         validator="#{triagemAtendimentoClienteMB.validarNumeroLocal}"
+                                         />
+                            <p:slider for="numeroatendimentocliente"
+                                      animate="true"
+                                      minValue="1" 
+                                      maxValue="100"
+                                      step="1"
+                                      range="max"
+                                      />
+                            <p:message for="numeroatendimentocliente"/>
+
+                            <p:separator/>
+
+                            <p:outputPanel  id="transferirdetalhedialogo" 
+                                            style="text-align:center; width: 100%;height: 100%;"
+                                            styleClass="box-solid box-info">
+                                <h:panelGrid style="width: 500px; height: 100%;"
+                                             columns="3"
+                                             id="painelatendimentodetalhado"
+                                             >
+                                    <p:outputLabel for="servico" value="Serviço"/> 
+                                    <p:selectOneMenu id="servico" 
+                                                     value="#{triagemAtendimentoClienteMB.triagematendimentochamadaclientetransfer.servicotransfer.nomeservico}"
+                                                     panelStyle="width:180px"             
+                                                     filter="true"
+                                                     filterMatchMode="startsWith"                                                                                                          
+                                                     >
+                                        <f:selectItems value="#{triagemAtendimentoClienteMB.getServico(loginMB.usuariotransfer.id)}"
+                                                       var="servico"
+                                                       itemValue="#{servico.nomeservico}"
+                                                       itemLabel="#{servico.nomeservico}"
+                                                       itemDescription="#{servico.nomeservico}"
+                                                       />
+                                        <p:ajax event="change" 
+                                                listener="#{triagemAtendimentoClienteMB.popularServicoporLocal()}" 
+                                                update=":consultaratendimento:local"/>
+                                    </p:selectOneMenu>
+
+                                    <p:spacer height="50px"/>
+
+                                    <p:outputLabel for="local" value="Local"/> 
+                                    <p:selectOneMenu id="local" 
+                                                     value="#{triagemAtendimentoClienteMB.triagematendimentochamadaclientetransfer.localtransfer.nomelocal}"
+                                                     >
+                                        <f:selectItems value="#{triagemAtendimentoClienteMB.local}" 
+                                                       var="local"
+                                                       itemValue="#{local.nomelocal}"
+                                                       itemLabel="#{local.nomelocal}"
+                                                       itemDescription="#{local.nomelocal}"
+                                                       />
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                            </p:outputPanel>
+
+                            <p:separator/>
+
+                            <p:commandButton  action="#{triagemAtendimentoClienteMB.consultarLocaleServicoCliente}" 
+                                              value="Confirmar"
+                                              ajax="false"
+                                              icon="fa fa-check"
+                                              styleClass="btn-primary"      
+                                              process="@form"
+                                              ignoreAutoUpdate="true"
+                                              update="@(div[id$=painelatendimentodetalhado])"
+                                              >
+                                <f:param name="nomeusuario" id="nomeusuario" value="#{loginMB.usuariotransfer.nomeusuario}" />
+                            </p:commandButton>
+                        </p:dialog>
+                    </div>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

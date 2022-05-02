@@ -1,0 +1,198 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" 
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" 
+                xmlns:adm="http://github.com/adminfaces"
+                xmlns:o="http://omnifaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:define name="head-end">
+        <ui:param name="renderBreadCrumb" value="false"/>
+    </ui:define>
+
+    <ui:define name="title">
+        Cadastrar Usuário
+    </ui:define>
+
+    <ui:define name="description">
+        Gerencie os Usuários do Sistema, Cargo e Seus Serviços... 
+    </ui:define>
+
+    <ui:define name="body">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h:form id="formulariousuario" rendered="#{((loginMB.ativarusuario) and (loginMB.ativo==(true)))}">
+                    <p:tabView id="tabview">
+                        <p:tab title="Geral">
+                            <h:inputHidden id="id" value="#{usuarioMB.usuariotransfer.id}"/>                                            
+                            <p:focus/>
+                            <div class="ui-g-12">
+                                <div class="ui-g-6">
+                                    <p:outputLabel for="usuario" value="Usuário*"/> 
+                                    <p:inputText id="usuario" value="#{usuarioMB.usuariotransfer.nomeusuario}" validator="#{usuarioMB.validarUsuario}" styleClass="form-control"/>                                            
+                                    <p:message for="usuario"/>
+                                </div>
+                                <div class="ui-g-6">
+                                    <p:outputLabel for="sobrenomeusuario" value="Nome de Usuário*"/> 
+                                    <p:inputText id="sobrenomeusuario" value="#{usuarioMB.usuariotransfer.sobrenomeusuario}" validator="#{usuarioMB.validarNomedoUsuario}" styleClass="form-control"/>                                            
+                                    <p:message for="sobrenomeusuario"/>
+                                </div>
+                            </div>
+                            <div class="ui-g-12">
+                                <div class="ui-g-6">
+                                    <p:outputLabel for="password" value="Senha*" />
+                                    <p:password  id="password" 
+                                                 feedback="true"
+                                                 promptLabel="Por favor informe Senha"
+                                                 weakLabel="Muito fraca"
+                                                 goodLabel="Senha razoável"
+                                                 strongLabel="Senha forte" 
+                                                 inline="true"
+                                                 match="senha"
+                                                 value="#{usuarioMB.usuariotransfer.senhausuario}" validator="#{usuarioMB.validarSenhadoUsuario}" styleClass="form-control"/>
+                                    <p:message for="password"/>
+                                </div>
+                                <div class="ui-g-6">
+                                    <p:outputLabel for="senha" value="Confirme a senha*" />
+                                    <p:password id="senha" value="#{usuarioMB.usuariotransfer.senhaconfirmacao}" styleClass="form-control"/>
+                                    <p:message for="senha"/>
+                                </div>
+                            </div>
+                            <div class="ui-g-12">
+                                <div class="ui-g-6">
+                                    <p:outputLabel for="unidade" value="Unidade*"/>
+                                    <p:selectOneMenu id="unidade" 
+                                                     value="#{usuarioMB.usuariotransfer.unidade.id}"
+                                                     panelStyle="width:180px"                                                     
+                                                     filter="true"
+                                                     filterMatchMode="startsWith"
+                                                     validator="#{usuarioMB.validarUnidadeUsuario}">
+                                        <f:selectItem itemLabel="Unidade" itemValue="" />
+                                        <f:selectItems value="#{usuarioMB.unidades}"
+                                                       var="unidade"
+                                                       itemValue="#{unidade.id}"
+                                                       itemLabel="#{unidade.nomeunidade}"
+                                                       itemDescription="#{unidade.nomeunidade}"
+                                                       />
+                                    </p:selectOneMenu>
+                                    <p:message for="unidade"/>
+                                </div>
+                                <div class="ui-g-6">
+                                    <p:outputLabel for="cargo" value="Cargo*"/>
+                                    <p:selectOneMenu id="cargo" 
+                                                     value="#{usuarioMB.usuariotransfer.cargo.id}"
+                                                     panelStyle="width:180px"                                                     
+                                                     filter="true"
+                                                     filterMatchMode="startsWith"
+                                                     validator="#{usuarioMB.validarCargoUsuario}">
+                                        <f:selectItem itemLabel="Cargo" itemValue="" />
+                                        <f:selectItems value="#{usuarioMB.cargos}"
+                                                       var="cargo"
+                                                       itemValue="#{cargo.id}"
+                                                       itemLabel="#{cargo.nomecargo}"
+                                                       itemDescription="#{cargo.nomecargo}"
+                                                       />
+                                    </p:selectOneMenu>
+                                    <p:message for="cargo"/>
+                                </div>
+                            </div>
+                            <div class="ui-g-12">
+                                <div class="ui-g-12">
+                                    <p:outputLabel for="status" value="Status*"/>
+                                    <p:selectOneMenu id="status" value="#{usuarioMB.usuariotransfer.statususuario}">
+                                        <f:selectItem itemLabel="Inativo" itemValue="I"/>
+                                        <f:selectItem itemLabel="Ativo" itemValue="A"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+
+                        </p:tab>
+                        <p:tab title="Serviços">
+                            <div class="col-xs-12">
+                                <p:message for="servico"/>
+                                <p:spacer height="5px" width="5px"/>
+                                <p:selectManyCheckbox id="servico"
+                                                      value="#{usuarioMB.usuariotransfer.descricaousuarioservico}"
+                                                      layout="responsive"
+                                                      columns="2"
+                                                      required="true"
+                                                      requiredMessage="INFORME SERVIÇO">
+                                    <f:selectItems value="#{usuarioMB.servicos}"
+                                                   var="servico"
+                                                   itemValue="#{servico.id}"
+                                                   itemLabel="#{servico.nomeservico}"
+                                                   itemDescription="#{servico.nomeservico}"
+                                                   class="ui-xs-12" 
+                                                   />
+                                </p:selectManyCheckbox>
+                            </div>
+                        </p:tab>                        
+                    </p:tabView>
+
+                    <div class="ui-g-12">
+                        <p:spacer height="20"/>
+                        <p:separator/>
+                        <p:commandButton  action="#{usuarioMB.inserirUsuario()}"
+                                          value="Salvar"
+                                          ajax="false"   
+                                          icon="fa fa-check" 
+                                          styleClass="btn-primary pull-right"/>
+                        <p:spacer width="50" height="20" />
+                        <p:commandButton value="Cancelar" 
+                                         action="#{usuarioMB.limpar()}"                                         
+                                         icon="fa fa-trash"
+                                         type="reset"
+                                         styleClass="btn-danger pull-right">
+                        </p:commandButton>
+                        <p:spacer width="100" height="50" />
+                        <p:commandButton value="Voltar" 
+                                         immediate="true"
+                                         action="consultarusuario?faces-redirect=true"
+                                         icon="fa fa-close"
+                                         styleClass="pull-right"                                                 
+                                         />
+                    </div>
+
+
+                    <script type="text/javascript">
+                        function handleMessageServico(facesmessage) {
+                            facesmessage.severity = 'info';
+                        }
+                    </script>
+
+                    <o:socket channel="servicopushmb" onmessage="handleMessageServico" >
+                        <p:ajax event="servicopushmb" 
+                                update="@(div[id$=servico])" 
+                                listener="#{usuarioMB.listarServico()}"/>
+                    </o:socket>
+
+                    <script type="text/javascript">
+                        function handleMessageCargo(facesmessage) {
+                            facesmessage.severity = 'info';
+                        }
+                    </script>
+
+                    <o:socket channel="cargopushmb" onmessage="handleMessageCargo">
+                        <p:ajax event="cargopushmb" 
+                                update="@(div[id$=cargo])" 
+                                listener="#{usuarioMB.listarCargos()}"/>
+                    </o:socket>
+
+                    <script type="text/javascript">
+                        function handleMessageUnidade(facesmessage) {
+                            facesmessage.severity = 'info';
+                        }
+                    </script>
+
+                    <o:socket channel="unidadepushmb" onmessage="handleMessageUnidade">
+                        <p:ajax event="unidadepushmb" 
+                                update="@(div[id$=unidade])" 
+                                listener="#{usuarioMB.listarUnidade()}"/>
+                    </o:socket>
+
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
