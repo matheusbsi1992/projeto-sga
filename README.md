@@ -4,7 +4,7 @@
 
 ## Objetivo
 
-Utilizando: Java, Bootstrap, Primefaces, AdminLTE, JSF, e PostgreSql.
+Utilizando: Java, Bootstrap,JavaScript, Primefaces, AdminLTE, JSF, e PostgreSql.
 
 ## Tecnologias
 
@@ -13,6 +13,7 @@ Utilizando: Java, Bootstrap, Primefaces, AdminLTE, JSF, e PostgreSql.
 * Primefaces
 * AdminLTE
 * JSF
+* JavaScript
 * PostgreSql
 * Netbeans
 * Glassfish
