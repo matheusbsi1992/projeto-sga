@@ -18,7 +18,7 @@
   
         
     <lifecycle>
-        <phase-listener>br.com.sga.service.LoginPhaseListener</phase-listener>
+        <phase-listener>br.com.projeto.clinica.service.LoginPhaseListener</phase-listener>
     </lifecycle>
     
 </faces-config>

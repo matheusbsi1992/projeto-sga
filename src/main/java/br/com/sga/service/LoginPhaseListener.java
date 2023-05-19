@@ -31,12 +31,18 @@ public class LoginPhaseListener implements PhaseListener {
         HttpServletResponse response = (HttpServletResponse) ec.getResponse();
         NavigationHandler nh = facesContext.getApplication().getNavigationHandler();
         boolean paginaLogin = viewId.lastIndexOf("index") > -1;
+        boolean paginaRegistro = viewId.lastIndexOf("registrar") > -1;
+        boolean paginaCadastro = viewId.lastIndexOf("cadastro") > -1;
 
         if (existeUsuarioLogado() && paginaLogin) {
             nh.handleNavigation(facesContext, null, "/home?faces-redirect=true");
-        } else if (!existeUsuarioLogado() && !paginaLogin) {
+        } else if (!existeUsuarioLogado() && !paginaLogin && !paginaRegistro && !paginaCadastro) {
             nh.handleNavigation(facesContext, null, "/index?faces-redirect=true");
-        }
+        } else if (!existeUsuarioLogado() && !paginaLogin && !paginaRegistro && !paginaCadastro) {
+            nh.handleNavigation(facesContext, null, "/registrar?faces-redirect=true");
+        } else if (!existeUsuarioLogado() && !paginaLogin && !paginaRegistro && !paginaCadastro) {
+            nh.handleNavigation(facesContext, null, "/cadastro?faces-redirect=true");
+        } 
         response.setHeader("Expires", "-1");
         response.setHeader("Cache-Control", "no-store, no-cache, must-revalidade, proxy-revalidade, private, post-check=0, pre-check=0");
         response.setHeader("Pragma", "no-cache");

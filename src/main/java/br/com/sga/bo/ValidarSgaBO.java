@@ -565,7 +565,7 @@ public class ValidarSgaBO {
             return false;
         }***/
         msg = "USUÁRIO INEXISTENTE";
-        if (usuariobo.existeUsuario(usuariotransfer.getNomeusuario()) == false) {
+        if (usuariobo.existeUsuario(usuariotransfer.getNomeusuario().toUpperCase()) == false) {
             ((UIInput) component).setValid(false);
             context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg));
         }

@@ -1,0 +1,260 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:o="http://omnifaces.org/ui"
+      >
+
+
+    <h:head>
+        <title>Registrar Clínica</title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/favicon.ico']}"/>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+        <meta name="mobile-web-app-capable" content="yes"/>
+        <h:outputStylesheet library="css" name="prism.css"/>
+
+
+        <meta name="theme-color" content="#444"/>
+
+        <style type="text/css">
+
+
+            body.login-page .login-logo {
+                margin: 20px;
+                text-align: center;
+                font-size: 60px;
+                font-weight: 500;
+            }
+
+            /* below css hides growls in small screens and makes messages visible */
+            @media (max-width: 768px) {
+
+                body div.ui-growl {
+                    display: none;
+                }
+
+                body div.ui-messages {
+                    display: block;
+                }
+
+            }
+            /* below css hides messages in medium/big devices and makes growl visible in such devices */
+            @media (min-width: 769px) {
+                body div.ui-growl {
+                    display: block;
+                }
+
+                body div.ui-messages {
+                    display: none;
+                }
+            }
+
+
+            body.login-page {
+                background-color: transparent;
+                padding: 5px;
+            }
+
+            html {
+                background: url(#{resource[ 'images:masthead.png' ]}) no-repeat center center fixed;
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                -o-background-size: cover;
+                background-size: cover;
+            }
+
+
+        </style>
+
+
+    </h:head>
+
+
+    <h:body styleClass="hold-transition login-page" id="bodyRegistrar" >
+
+        <div class="login-box">
+            <div class="login-logo">
+                <p:link href="index.xhtml"><b>Minha</b>Clínica</p:link>
+            </div>
+            <!-- /.login-logo -->
+            <div class="box login-box-body">
+                <h:form id="formRegistro">
+
+
+                    <p class="login-box-msg">Registre para iniciar sua sessão</p>
+
+                    <div class="form-group has-feedback">
+
+                        <h:inputHidden id="codigoClinica" value="#{usuarioClinicaMB.codigoAleatorio}" validator="#{usuarioClinicaMB.VALIDARCODIGOUSUARIOCLINICA}"/>
+                        <p:message for="codigoClinica" class="hidden"/>
+
+                        <p:inputText  id="nomeClinica"
+                                      value="#{usuarioClinicaMB.clinica.nomeClinica}"
+                                      styleClass="form-control"
+                                      placeholder="Nome da sua Clínica"
+                                      validator="#{usuarioClinicaMB.VALIDARNOMECLINICA}"
+                                      title="Informe o nome correspondente a sua Clínica"                                      
+                                      />                                                    
+                        <i class="form-control-feedback fa fa-university"></i>
+                        <p:message for="nomeClinica"/>
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <p:inputText  id="nomePessoa"
+                                      value="#{usuarioClinicaMB.pessoa.nomePessoa}"  
+                                      styleClass="form-control"
+                                      placeholder="Seu nome e sobrenome"
+                                      validator="#{usuarioClinicaMB.VALIDARNOMEPESSOACLINICA}"
+                                      title="Informe o seu Nome e Sobrenome"
+                                      >                            
+                        </p:inputText>
+                        <i class="form-control-feedback fa fa-user"></i>
+                        <p:message for="nomePessoa"/>
+                    </div>
+
+                    <div class="form-group has-feedback">                        
+                        <p:inputText id="emailPessoa"
+                                     value="#{usuarioClinicaMB.pessoa.emailPessoa}"                                       
+                                     styleClass="form-control" 
+                                     placeholder="Seu melhor Email"                                     
+                                     validator="#{usuarioClinicaMB.VALIDAREMAILUSUARIOCLINICA}"
+                                     title="Informe o seu melhor Email condizente a sua Clínica"
+                                     />
+                        <i class="form-control-feedback fa fa-envelope"></i>
+                        <p:message for="emailPessoa"/>
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <p:inputMask  id="celularClinica"
+                                      value="#{usuarioClinicaMB.clinica.celularClinica}"
+                                      styleClass="form-control"
+                                      placeholder="Seu melhor Celular"
+                                      mask="(99) 99999-9999"
+                                      validator="#{usuarioClinicaMB.VALIDARCELULARUSUARIOCLINICA}"
+                                      title="Informe o seu melhor número de Celular condizente a sua Clínica"
+                                      />                            
+                        <i class="form-control-feedback fa fa-mobile"></i>
+                        <p:message for="celularClinica"/>
+                    </div>
+                    
+                    <div class="form-group has-feedback">
+                        <p:selectOneMenu  id="tipoPessoa"
+                                          value="#{usuarioClinicaMB.pessoa.tipoPessoa}"
+                                          styleClass="form-control"
+                                          placeholder="Seu tipo de Pessoa"                                      
+                                          validator="#{usuarioClinicaMB.VALIDARTIPOUSUARIOCLINICA}"
+                                          title="Informe o seu tipo de função condizente a sua Clínica"
+                                          >
+                            <f:selectItem itemLabel="Seu tipo de Pessoa" itemValue=" "/>
+                            <f:selectItem itemLabel="Você é um Administrador ?" itemValue="Colaborador"/>
+                            <f:selectItem itemLabel="Você é um Atendente ?" itemValue="Colaborador"/>
+                            <f:selectItem itemLabel="Você é um Especialista ?" itemValue="Profissional"/>
+                        </p:selectOneMenu>
+                        <i class="form-control-feedback fa fa-users"></i>
+                        <p:message for="tipoPessoa"/>
+                    </div>
+
+                    <div class="row">
+                        <p:spacer height="10"/>
+                        <div class="col-xs-12">
+                            <p:commandButton  styleClass="btn btn-success btn-block" 
+                                              action="#{usuarioClinicaMB.INSERIRUSUARIOCLINICA()}" 
+                                              value="Registrar"  
+                                              update="formRegistro"    
+                                              >                                
+                            </p:commandButton>
+                        </div>
+                    </div>
+
+                    <p:ajaxStatus id="AjaxStatusAtivo"
+                                  onstart="PF('statusDialogo').show()"
+                                  onsuccess="PF('statusDialogo').hide()"
+                                  />
+
+                    <p:spacer height="20"/>
+
+
+                    <div class="row text-center">
+                        <p> Ao clicar em <b>Registrar</b> você concorda com a <a href="cadastro.xhtml" target="_blank"> política de privacidade.</a> </p>
+                    </div>
+
+                    <p:spacer height="20"/>
+
+                    <div class="row text-center">
+                        <div class="col-xs-12">
+                            <p:link   value="Já é Nosso Cliente? Clique aqui !"
+                                      href="index.xhtml"
+                                      />
+                        </div>
+                    </div>
+
+                    <p:growl showDetail="false" id="atualizarDialogoRegistro"/>
+
+
+                    <p:dialog widgetVar="statusDialogo" 
+                              modal="true"
+                              draggable="false"
+                              resizable="false"
+                              showHeader="false"                  
+                              responsive="true"
+                              appendTo="@(body)"                              
+                              >
+                        <p:graphicImage value="images/mail-send-main-search.gif" 
+
+                                        />
+                    </p:dialog>
+
+                    <script type="text/javascript">
+                        function handlerRegisterClinicaMessage(facesmessage) {
+                            facesmessage.severity = 'info';
+
+                        }
+                    </script>
+
+                    <o:socket channel="registrarClinicapushmb"
+                              onmessage="handlerRegisterClinicaMessage"
+                              connected="true"
+                              >
+                        <p:ajax event="registrarClinicapushmb" 
+                                update="@form"
+                                />
+                    </o:socket>
+
+
+                </h:form>
+
+            </div>
+            <!-- /.login-box-body -->
+        </div>
+
+        <h:outputScript target="head" name="jquery-latest.min.js"/>
+        <h:outputScript library="js" name="prism.js"  target="head"/>
+        <h:outputScript library="js" name="admintemplate.js"  target="head"/>
+
+        <!--<div id="divDialogoImagemEnvioEmail">-->
+
+        <!--</div>-->
+
+        <script>
+            function visualizarDialogoEmail() {
+                alert(#{usuarioClinicaMB.ativacao});
+                if (#{usuarioClinicaMB.ativacao} == false) {
+                    //--desativa a div para nao deixar visualizar o botao de de nao compareceu para o atendimento
+                    document.getElementById('divDialogoImagemEnvioEmail').style.display = "none";
+                    //alert('Passou neste bloco');
+                } else {
+                    //--desativa a div para nao deixar visualizar o botao de chamar o paciente
+                    document.getElementById('divDialogoImagemEnvioEmail').style.display = "block";
+                    //--ativa a div para deixar visualizar o botao de chamar o paciente
+                    //document.getElementById('chamarproximoatendimento').style.display = "block";
+                    // alert('Entrou neste bloco');
+                }
+            }
+            ;
+        </script>
+
+    </h:body>
+
+</html>

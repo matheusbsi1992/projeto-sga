@@ -1,0 +1,275 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:adm="http://github.com/adminfaces"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      template="WEB-INF/templates/template.xhtml">
+
+
+    <h:head>
+        <title>Registrar Clínica</title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/favicon.ico']}"/>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+        <meta name="mobile-web-app-capable" content="yes"/>
+        <h:outputStylesheet library="css" name="prism.css"/>
+
+
+        <meta name="theme-color" content="#444"/>
+
+        <style type="text/css">
+
+
+            body.login-page .login-logo {
+                margin: 20px;
+                text-align: center;
+                font-size: 60px;
+                font-weight: 500;
+            }
+
+            /* below css hides growls in small screens and makes messages visible */
+            @media (max-width: 768px) {
+
+                /* body div.ui-growl {
+                     display: none;
+                 }*/
+
+                body div.ui-messages {
+                    display: block;
+                }
+
+            }
+            /* below css hides messages in medium/big devices and makes growl visible in such devices */
+            @media (min-width: 769px) {
+                body div.ui-growl {
+                    display: block;
+                }
+
+                body div.ui-messages {
+                    display: none;
+                }
+            }
+
+
+            body.login-page {
+                background-color: transparent;
+                padding: 5px;
+            }
+
+            html {
+                background: url(#{resource[ 'images:masthead.png' ]}) no-repeat center center fixed;
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                -o-background-size: cover;
+                background-size: cover;
+            }
+
+
+
+        </style>
+
+
+    </h:head>
+
+
+    <h:body styleClass="hold-transition login-page">
+
+        <p:panel rendered="#{usuarioClinicaMB.ativacao}" >
+            <div class="login-logo">
+                <p class="p-m-0 text-center" style="font-size: 50px; color: black; ">
+                    <b>Seja Bem Vindo(a) !</b>
+                </p>
+                <p class="p-m-0 text-center" style="font-size: 40px; color: black;">
+                    <b>Seu cadastro foi efetuado com sucesso.</b>
+                </p>
+            </div>
+        </p:panel>
+        <!-- /.login-logo -->
+        <div class="box box-primary">
+
+            <div class="box-header with-border">
+                <h:form id="formCadastro">
+
+                    <p:dialog id="dialogoDeCadastro" 
+                              widgetVar="dialogoDeCadastro"
+                              resizable="false"
+                              draggable="false"
+                              appendTo="@(body)"
+                              responsive="true"                              
+                              modal="true"
+                              styleClass="box-success"
+                              header="CADASTRO EFETUADO COM SUCESSO"
+                              >
+                        <p class="p-m-0 text-center" style="font-size: 30px; color: red">
+                            ATENÇÃO
+                        </p>
+                        <p class="p-m-0 text-center" style="font-size: 20px;">
+                            O <b>Email com a Senha e o Código da Clínica</b> podem cair por engano na <b>Caixa de SPAM</b>  ou <b>Lixo eletrônico</b>.
+                        </p>
+
+                        <p:spacer height="10"/>
+
+                        <p class="p-m-0 text-center" style="font-size: 15px;">
+                            Verifique lá por gentileza. 
+                        </p>
+
+                        <p:spacer height="20"/>
+
+                        <f:facet name="footer">
+                            <p:commandButton value="Ok, entendi!" 
+                                             icon="fa fa-check" 
+                                             iconPos="center"
+                                             styleClass="btn-lg btn-teal btn-block"
+                                             onclick="PF('dialogoDeCadastro').hide();
+                                                     return false"
+                                             />                            
+                        </f:facet>
+
+                    </p:dialog>
+
+                    <div class="ui-g-12">
+
+                        <div class="ui-g-12">
+
+                            <p:fieldset rendered="#{usuarioClinicaMB.ativacao}" legend="Atenção" class="text-center">
+
+                                <p class="p-m-0 text-center" style="font-size: 30px;">
+                                    Nós enviamos, o seu <b> e-mail </b> a <b>senha de acesso</b> e o <b>código da clínica</b> para o seu <b>celular</b> e <b>e-mail</b>.
+                                </p>
+
+                                <p class="p-m-0 text-center" style="font-size: 20px; color: red">
+                                    Verifique a sua conta de email (inclusive o Lixo Eletrônico ou a Caixa de SPAM)
+                                </p>
+                            </p:fieldset>
+
+                        </div>
+
+
+                        <div class="ui-g-12">
+                            <p:fieldset> 
+                                <p class="p-m-0 text-center" style="font-size: 50px;">
+                                    <b>Política de Privacidade</b>
+                                </p>
+
+                                <p class="p-m-0 text-center" style="font-size: 30px;">
+                                    <b>Respeitamos suas informações</b>
+                                </p>
+
+                                <p:spacer height="20"/>
+
+                                <p class="p-m-0" style=" font-size: 15px;">
+                                    Quando você se cadastra na Minha Clínica, nós coletamos algumas informações pessoais:
+                                </p>
+
+                                <ul style="font-size: 15px;">
+                                    <li>Nome do responsável;</li>
+                                    <li>Nome de sua empresa;</li>
+                                    <li>Telefone;</li>
+                                    <li>Email;</li>
+                                </ul>
+
+                                <p class="p-m-0" style=" font-size: 15px;">
+                                    Temos 2 (dois) objetivos ao coletarmos essa informação. O primeiro é conceder acesso ao Minha Clínica a partir do e-mail, senha e código da clínica cadastrados. O segundo objetivo e motivo de coletarmos seu nome, nome de sua empresa, seu telefone e também seu e-mail - é termos a possibilidade de entrarmos em contato com você para lhe oferecer ajuda durante o período de degustação.
+                                </p>
+
+                                <p class="p-m-0" style=" font-size: 15px;">
+                                    As suas informações serão coletadas, usadas e tratadas única e exclusivamente para que as funcionalidades contratadas sejam efetivamente usadas por você e serão armazenadas em ambiente seguro e de acesso restrito, atendendo a preservação da intimidade, da vida privada, da honra e da imagem das partes direta ou indiretamente envolvidas.
+                                </p>
+
+                                <p class="p-m-0" style=" font-size: 15px;">
+                                    No processo de adesão do sistema, nós solicitamos também o CPF ou CNPJ, que tem por objetivo apenas a identificação e registro para emissão de boleto bancário referente ao pagamento da mensalidade do sistema Minha Clínica.
+                                </p>
+
+                                <p class="p-m-0" style=" font-size: 15px;">
+                                    Os cadastros de clientes que são importados ou inseridos no sistema, também possuem o cuidado com o armazenamento e privacidade. Não utilizamos estes dados para outros interesses e não compartilhamos com ninguém.
+                                </p>
+
+                                <p class="p-m-0" style=" font-size: 15px;">
+                                    A presente Política de Privacidade tem como fundamento a legislação brasileira, especialmente a Lei Geral de Proteção de Dados – LGPD Lei 13.709/2018. De acordo com esta Lei, dados pessoais são informações de uma pessoa física que a identifiquem ou que a tornem identificável, como endereço, CPF, idade, entre outros.
+                                </p>
+
+                                <p class="p-m-0" style=" font-size: 15px;">
+                                    A Minha Clínica se compromete a cumprir esta Lei, desde sua vigência, garantindo:
+                                </p>
+
+                                <ul style="font-size: 15px;">
+
+                                    <li>
+                                        1. Proteger os direitos dos colaboradores, clientes e parceiros;
+                                    </li>
+
+                                    <li>
+                                        2. Adotar processos e regras que assegurem o cumprimento, de forma abrangente, de boas práticas relativas à proteção de dados pessoais;
+                                    </li>
+
+                                    <li>
+                                        3. Adotar medidas de proteção em relação a risco de incidente de segurança que envolva dados pessoais.
+                                    </li>
+
+                                </ul>
+
+                                <p class="p-m-0" style=" font-size: 15px;"> 
+                                    Declaramos que a empresa não compartilha dados pessoais de seus clientes com outras empresas ou serviços terceirizados e mantemos sigilo dos dados fornecidos ao sistema. Este item contempla pessoas físicas e jurídicas residentes no Brasil, ou no exterior.
+                                </p>
+
+                                <p class="p-m-0" style=" font-size: 15px;"> 
+                                    Caso você deseje alterar suas informações, basta entrar no sistema Minha Clínica (http://MinhaClinica.com.br) e clicar em "Configurações > Dados da Empresa".
+                                </p>
+
+                                <p class="p-m-0" style=" font-size: 15px;"> 
+                                    Suas informações nunca serão fornecidas a nenhuma outra empresa que não a Minha Clínica, mas se mesmo assim você desejar removê-la envie um e-mail para <b> (minhaclinicaradikal@hotmail.com) </b> a partir do e-mail que você informou no cadastro ao Simples Agenda com o assunto "Excluir minha conta". Sua conta será excluída juntamente com todos seus dados.
+                                </p>
+
+                                <p class="p-m-0" style=" font-size: 15px;"> 
+                                    Caso você queira parar de receber comunicações futuras simplesmente envie um e-mail para <b> (minhaclinicaradikal@hotmail.com) </b> a partir do e-mail que você informou no cadastro ao Minha Clínica com o assunto "Não entrar em contato".
+                                </p>
+                                <p class="p-m-0" style=" font-size: 15px;"> 
+                                    Nossa Política de Privacidade está em conformidade com a legislação da República Federativa do Brasil. Qualquer questão decorrente do relacionamento entre o cliente e a Minha Clínica serão tratadas no Foro na Comarca de Lagarto do estado de Sergipe, com a exclusão de qualquer outro, por mais privilegiado que seja.
+                                </p>
+                            </p:fieldset>
+                        </div>
+
+                        <p:spacer height="20"/>
+
+                        <div class="ui-g-12 text-center">
+
+                            <p class="p-m-0 text-center" style="font-size: 30px;">
+                                Para acessar o sistema clique no botão abaixo
+                            </p>
+
+                            <div class="ui-grid-responsive"> 
+                                <p class="p-m-0 text-center">
+                                    <p:button value="Clique aqui para entrar !"
+                                              href="index.xhtml"
+                                              icon="fa fa-arrow-right" 
+                                              styleClass="btn-danger btn-block btn-sm"
+                                              style="font-size: 20px;"
+                                              />
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <p:spacer height="50"/>
+
+                    <p:growl showDetail="false" id="atualizarDialogoRegistro"/>
+
+                </h:form>
+
+            </div>
+            <!-- /.login-box-body -->
+        </div>
+
+
+        <h:outputScript target="head" name="jquery-latest.min.js"/>
+        <h:outputScript library="js" name="prism.js"  target="head"/>
+        <h:outputScript library="js" name="admintemplate.js"  target="head"/>
+    </h:body>
+
+</html>

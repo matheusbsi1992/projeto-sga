@@ -1,0 +1,184 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:adm="http://github.com/adminfaces"
+                xmlns:o="http://omnifaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="head-end">
+
+        <ui:param name="renderBreadCrumb" value="false"/>
+        <style type="text/css">
+            .ui-grid-row .ui-grid-col-2,
+            .ui-grid-row .ui-grid-col-10 {
+                padding: 0.5em 0;
+                margin-left: 10px;
+            }
+
+            .ui-orderlist .ui-orderlist-list {
+                height: auto;
+            }
+
+            .ui-orderlist .ui-grid-row .ui-grid-col-2,
+            .ui-orderlist .ui-grid-row .ui-grid-col-10 {
+                padding: 0;
+            }
+            .ui-confirm-popup-message{
+                font-size: 20px;
+            }
+
+        </style>
+
+    </ui:define>
+
+    <ui:define name="title">
+        Local
+    </ui:define>
+
+    <ui:define name="description">
+        Gerencie os Locais de Atendimento do Sistema...
+    </ui:define>
+
+    <ui:define name="body">
+
+
+        <div class="box box-primary right">
+            <div class="box-header with-border right">
+
+                <h:form rendered="#{((loginClinicaMB.ativarlocal) and (loginClinicaMB.ativo==(true)))}">
+                    <p:commandButton action="inserirlocal?faces-blackirect=true" ajax="false" icon="fa fa-plus"
+                                     value="Novo" styleClass="btn-primary">
+                    </p:commandButton>
+                    <p:separator/>
+                </h:form>
+
+
+
+                <h:form id="consultarLocal"  rendered="#{((loginClinicaMB.ativarlocal) and (loginClinicaMB.ativo==(true)))}">
+
+                    <p:panel class="ui-g-12">
+                        <legend>Pesquisar</legend>
+                        <div class="ui-g-12">
+                            <div class="ui-g-12 ui-md-4">
+                                <div class="ui-inputgroup">
+                                    <p:inputText placeholder="Nome" value="#{localListarMB.nomeLocal}"/>
+                                    <p:commandButton update=":mensagem :consultarLocal:overviewTableUser" ajax="false" action="#{localListarMB.CONSULTARACTION}" icon="fa fa-search" styleClass="btn-info"/>
+                                </div>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                    <p:spacer height="20px"/>
+
+                    <p:dataTable var="item" value="#{localListarMB.listarLocal}"
+                                 rendered="#{localListarMB.listarLocal.size()>0 or localListarMB.listarLocal.size()==0}"
+                                 emptyMessage="Nenhum Registro Encontrado."
+                                 styleClass="responsive-table striped display" 
+                                 id="overviewTableUserLocal"
+                                 paginator="true"
+                                 rows="10"
+                                 paginatorPosition="bottom"	                                 
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="[ Exibindo de {startRecord} a {endRecord} no total de {totalRecords} - Página: {currentPage}/{totalPages} ]"
+                                 rowsPerPageTemplate="5,10,15,20,30"
+
+                                 >
+
+
+                        <p:column headerText="Local"  width="150" styleClass="align-center">
+                            <h:outputText value="#{item.nomeLocal}" />
+                        </p:column>
+
+                        <p:column headerText="Opções" styleClass="align-center" width="150">
+                            <p:commandButton id="idexcluirlocal" 
+                                             actionListener="#{localMB.DELETARLOCAL(item.idLocal)}" 
+                                             icon="fa fa-trash"                                             
+                                             title="Excluir"    
+                                             onclick="Swal.fire({
+                                                         position: 'center',
+                                                         icon: 'success',
+                                                         title: 'Local deletado com sucesso!',
+                                                         showConfirmButton: false,
+                                                         timer: 3000
+                                                     })" 
+                                             >
+                                <p:confirm type="popup" header="Deletar" message="Deseja realmente deletar este item:  #{item.nomeLocal} ?" icon="fa fa-info-circle"/>
+                            </p:commandButton>
+
+                            <p:spacer width="10" height="10"/>
+
+                            <p:commandButton id="ideditarlocal" 
+                                             action="#{localMB.EDITARLOCAL(item.idLocal)}"
+                                             icon="fa fa-pencil"
+                                             title="Editar"                                                
+                                             >
+                                <p:confirm  type="popup"  
+                                            header="Alterar"
+                                            message="Deseja realmente alterar este item: #{item.nomeLocal} ?"
+                                            icon="fa fa-exclamation-triangle"/>                                
+                            </p:commandButton>
+
+                            <p:confirmPopup global="true"                                             
+                                            styleClass="box-solid box-info">
+                                <p:commandButton value="Não" type="button" icon="fa fa-close" styleClass="btn btn-danger ui-confirm-popup-no ui-button-flat pull-right"/>
+
+                                <p:commandButton value="Sim" type="button" icon="fa fa-check"  styleClass="btn btn-primary ui-confirm-popup-yes pull-right"  />
+                            </p:confirmPopup>
+
+
+
+                        </p:column>
+                    </p:dataTable>                    
+                    <script type="text/javascript">
+                        function handleMessage(facesmessage) {
+                            facesmessage.severity = 'info';
+                        }
+                    </script>
+                    <o:socket channel="localPushMB"
+                              onmessage="handleMessage"
+                              >
+                        <p:ajax event="localPushMB" 
+                                update=":consultarLocal:overviewTableUserLocal"
+                                listener="#{localListarMB.LISTARLOCALCLINICA}"
+                                />
+                    </o:socket>
+
+
+                    <!--      <script type="text/javascript">
+      
+                              //  document.getElementById("first").addEventListener("click", exibirMensagem);
+      
+                              function exibirMensagem() {
+                                  // alert('Entrou aqui');
+                                  Swal.fire({
+                                      title: 'Are you sure?',
+                                      text: "You won't be able to revert this!",
+                                      icon: 'warning',
+                                      showCancelButton: true,
+                                      confirmButtonColor: '#3085d6',
+                                      cancelButtonColor: '#d33',
+                                      confirmButtonText: 'Yes, delete it!',
+                                  }).then((result) => {
+                                      if (result.isConfirmed) {
+                                          Swal.fire(
+                                                  'Deleted!',
+                                                  'Your file has been deleted.',
+                                                  'success'
+                                                  )
+                                      }
+                                  })
+                              }
+      
+      
+                          </script>
+                    -->
+
+                </h:form>
+
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

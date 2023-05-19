@@ -29,7 +29,7 @@ public class LocalDAO extends DAO {
      */
     public boolean inserirLocal(LocalTransfer localTransfer) throws SQLException {
         try {
-            strBuffer = new StringBuffer().append("INSERT INO projetosga.local(\n"
+            strBuffer = new StringBuffer().append("INSERT INTO projetosga.local(\n"
                     + "            nomelocal"
                     + "            )\n"
                     + "    VALUES (  ?"

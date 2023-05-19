@@ -39,6 +39,8 @@ import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
+import org.omnifaces.cdi.Push;
+import org.omnifaces.cdi.PushContext;
 
 /**
  *
@@ -89,6 +91,10 @@ public class LoginMB implements Serializable {
 
     private boolean ativargrowltopmenu = false;
 
+    @Inject
+    @Push(channel = "loginpushmb")
+    private PushContext loginpushmb;
+
     /**
      *
      * @return Usuario do login
@@ -135,6 +141,8 @@ public class LoginMB implements Serializable {
                 return null;
             }
         }
+        loginpushmb.send("loginpushmb");
+        System.out.println("ENTROU NO LOGIN!!!");
         return "home.xhtml?faces-redirect=true";
     }
 
@@ -248,7 +256,6 @@ public class LoginMB implements Serializable {
     /**
      * Validações
      */
-
     public boolean validarUsuarioSenhaLogin(FacesContext context, UIComponent component, Object value) throws ValidatorException, SQLException {
         return validarusuario.validarUsuarioSenhaLogin(context, component, this);
     }

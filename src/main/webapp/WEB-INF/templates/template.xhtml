@@ -7,23 +7,24 @@
     <ui:define name="head">
         <h:outputScript library="js" name="dataprime.js"/>
         <h:outputStylesheet library="css" name="showcase.css"/>
-        <h:outputStylesheet library="css" name="prism.css"/>
-        
-       <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"/>-->
+        <h:outputStylesheet library="css" name="prism.css"/>        
+        <h:outputStylesheet library="css" name="sweetalert2.min.css"/>
+        <h:outputScript library="js" name="sweetalert2.all.min.js"/>
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"/>-->
         <h:outputStylesheet library="webjars" name="font-awesome/4.7.0/css/font-awesome-jsf.css" />
 
         <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/favicon.ico']}"/>
+        
+        <title>Minha Clínica</title>
 
-        <title>SGA</title>
- 
     </ui:define>
 
     <ui:define name="logo-lg">
-        SGA
+        Minha Clínica
     </ui:define>
 
     <ui:define name="logo-mini">
-        SGA
+        MC
     </ui:define>
 
     <ui:define name="menu-begin">
@@ -39,7 +40,7 @@
     </ui:define>
 
     <ui:define name="center-header">
-        <h4>Sistema de Gerenciamento de Atendimentos - SGA</h4>
+        <p class="p-m-0 text-center" style="font-size: 30px;">Sistema Minha Clínica</p>
     </ui:define>
 
     <ui:define name="content-end">
@@ -50,11 +51,11 @@
 
     <ui:define name="footer">
         <a 
-           href="#">
-            Copyright (C) 2021 - <b>RadikalSI</b>
+            href="#">
+            Copyright (C) 2022 - <b>RadikalTI</b>
         </a>
         <div class="pull-right hidden-xs" style="color: gray">
-            <i>v2.1</i>
+            <i>v1.0</i>
         </div>
         <h:outputScript library="js" name="prism.js"  target="head"/>
     </ui:define>

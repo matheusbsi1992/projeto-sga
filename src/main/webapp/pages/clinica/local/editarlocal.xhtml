@@ -1,0 +1,72 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" 
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" 
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:adm="http://github.com/adminfaces"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:define name="head-end">
+        <ui:param name="renderBreadCrumb" value="false"/>
+    </ui:define>
+
+    <ui:define name="title">
+        Editar Local
+    </ui:define>
+
+    <ui:define name="description">
+        Gerencie os Locais de Atendimento do Sistema... 
+    </ui:define>
+
+    <ui:define name="body">
+
+        <div class="box box-primary">
+
+            <div class="box-header with-border">
+
+                <h:form id="formularioLocal" prependId="false"  rendered="#{((loginClinicaMB.ativarlocal) and (loginClinicaMB.ativo==(true)))}">
+
+                    <h:inputHidden id="idLocal" value="#{localClinica.idLocal}"/>                                            
+                    
+                    <div class="ui-g-12">
+                        <div class="ui-g-12">
+                            <p:outputLabel for="nomeLocal" value="Nome Local*"/> 
+                            <p:inputText id="nomeLocal" value="#{localClinica.nomeLocal}" validator="#{localMB.VALIDARNOMEDOLOCALATUALIZACAO}" styleClass="form-control"/>   
+                            <p:message for="nomeLocal"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-g-12">
+                        <p:spacer height="20"/>
+                        <p:separator/>
+                        <p:commandButton  action="#{localMB.ALTERARLOCAL(localClinica)}"
+                                          value="Salvar"
+                                          ajax="false"
+                                          icon="fa fa-check"
+                                          styleClass="btn-primary pull-right"/>                             
+
+                        <p:spacer width="10"/>
+                        <p:commandButton value="Cancelar"                                          
+                                         update=":formularioLocal:nomeLocal"
+                                         icon="fa fa-eraser"
+                                         type="reset"
+                                         styleClass="btn-danger pull-right">
+                        </p:commandButton>
+                        <p:spacer width="10" />
+                        <p:commandButton value="Voltar" 
+                                         immediate="true"
+                                         action="consultarlocal?faces-redirect=true"
+                                         icon="fa fa-arrow-left"
+                                         styleClass="pull-right"
+                                         />
+                    </div>
+
+
+                </h:form>
+            </div>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

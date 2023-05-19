@@ -2,11 +2,10 @@ package br.com.sga.dao;
 
 import br.com.sga.conexaofactory.Conexao;
 
-import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.lang.NoClassDefFoundError;
-import java.sql.SQLException;
+
 import org.apache.log4j.Logger;
 //import org.apache.logging.log4j.Logger;
 //import org.apache.logging.log4j.LogManager;
